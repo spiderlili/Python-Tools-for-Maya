@@ -3,4 +3,6 @@ selection = cmds.ls(selection = True)
 if len(selection) == 0:
     selection = cmd.ls(dag = True, long = True) #only get onjects in the outliner - no hidden objects. returns the full path names for Dag objects.
 selection.sort(key = len, reverse = True) #sort objects from longest to shortest so children first
-print selection
+for obj in selection:
+    shortName = obj.split("|")[-1] #split each object into a list of every word and take the last item of the list
+    print shortName
