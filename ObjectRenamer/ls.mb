@@ -14,3 +14,14 @@ for obj in selection:
         objType = cmds.objectType(child)        
     else: #obj type = object type of the parent(obj)
         objType = cmds.objectType(obj)
+    if objType == "mesh":
+        suffix = "geo"
+    elif objType == "joint":
+        suffix = "joint"
+    elif objType == "camera":
+        continue
+    else:
+        suffix = "group"
+        
+    newName = shortName + "_" + suffix
+    print newName
