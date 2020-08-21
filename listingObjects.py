@@ -13,3 +13,4 @@ selection.sort(key = len, reverse = True)
 for obj in selection:
 	shortName = obj.split("|")[-1] 
 	print shortName
+	children = cmds.listRelatives()
