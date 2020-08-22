@@ -12,5 +12,11 @@ selection.sort(key = len, reverse = True)
 '''sort using the length of the objects because children will have a longer full name: act on them first to not affect their path'''
 for obj in selection:
 	shortName = obj.split("|")[-1] 
-	print shortName
-	children = cmds.listRelatives()
+	'''print shortName'''
+	children = cmds.listRelatives(obj, children = True, fullPath = True) or [] 
+	if len(children) == 1:
+		child = children[0]
+		objType = cmds.objectType(child)
+	else:
+		objType = cmds.objectType(obj) 
+	print objType
