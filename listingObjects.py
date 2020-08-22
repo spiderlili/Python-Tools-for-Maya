@@ -28,7 +28,7 @@ def rename():
 			suffix = "geo"
 		elif objType == "joint":
 			suffix = "jnt"
-		elif objType == "vamera"
+		elif objType == "camera":
 			print "skipping camera"
 			continue
 		else:
