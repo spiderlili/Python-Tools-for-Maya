@@ -34,6 +34,9 @@ def rename():
 		else:
 			suffix = "group"
 
+		if obj.endswith(suffix):
+			continue
+
 		newName = shortName + "_" + suffix
 		cmds.rename(obj, newName)
 
