@@ -1,42 +1,46 @@
 from maya import cmds
 
-def rename():
-	selection = cmds.ls(selection = True)
+SUFFIXES = {
+    "mesh": "geo",
+    "joint": "jnt",
+    "ambientLight": "lgt",
+    "camera": None
+}
 
-	'''get a new selection'''
-	if len(selection) == 0: 
-		selection = cmds.ls(dag = True, long = True) 
+DEFAULT_SUFFIX = "grp"
 
+
+def rename(selection=False):
+    objects = cmds.ls(selection=selection, dag=True, long=True)
+
+	if selection and not objects:
+		raise RuntimeError("You don't have anything selected")
 	'''sort using the length of the objects because children will have a longer full name: act on them first to not affect their path'''
-	selection.sort(key = len, reverse = True) 
-	'''print selection'''
+	objects.sort(key=len, reverse=True)
 
-	'''sort using the length of the objects because children will have a longer full name: act on them first to not affect their path'''
-	for obj in selection:
-		shortName = obj.split("|")[-1] 
-		'''print shortName'''
-		children = cmds.listRelatives(obj, children = True, fullPath = True) or [] 
-		if len(children) == 1:
-			child = children[0]
-			objType = cmds.objectType(child)
-		else:
-			objType = cmds.objectType(obj) 
-		
-		'''print objType'''
+    '''sort using length of the objects as children will have a longer full name: act on them 1st to not affect their path '''
+    for obj in objects:
+        short_name = obj.split("|")[-1]
+        '''print shortName'''
+        children = cmds.listRelatives(obj, children=True, fullPath=True) or []
+        if len(children) == 1:
+            child = children[0]
+            objType = cmds.objectType(child)
+        else:
+            objType = cmds.objectType(obj)
 
-		if objType == "mesh":
-			suffix = "geo"
-		elif objType == "joint":
-			suffix = "jnt"
-		elif objType == "camera":
-			print "skipping camera"
-			continue
-		else:
-			suffix = "group"
+        '''print objType'''
 
-		if obj.endswith(suffix):
-			continue
+        suffix = SUFFIXES.get(objType, DEFAULT_SUFFIX)
+        if not suffix:
+            continue
 
-		newName = shortName + "_" + suffix
-		cmds.rename(obj, newName)
+        if obj.endswith('_' + suffix):
+            continue
 
+        new_name = "%s_%s" % (short_name, suffix)
+        cmds.rename(obj, new_name)
+
+		index = objects.index(obj)
+		objects[index] = obj.replace(short_name, new_name)
+	return objects
