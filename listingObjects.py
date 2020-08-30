@@ -11,6 +11,13 @@ DEFAULT_SUFFIX = "grp"
 
 
 def rename(selection=False):
+    """
+    This function will rename any objects to have the correct suffix
+    Args:
+        selection: whether or not to use the current selection
+    Returns:
+        a list of all the objects we operated on
+    """
     objects = cmds.ls(selection=selection, dag=True, long=True)
 
 	if selection and not objects:
