@@ -9,7 +9,7 @@ def createGear(teeth = 10, length = 0.3):
         length: the length of teeth
 
     Returns:
-        a tuple of the transform, constructor, polyExtrude node
+        a tuple of the constructor, transform, polyExtrude node
     """
     # teeth are every alternate face = spans * 2
     spans = teeth * 2
@@ -24,9 +24,9 @@ def createGear(teeth = 10, length = 0.3):
     extrudeFaces = cmds.polyExtrudeFacet(localTranslateZ = length)[0]
 
     # gives back useful data to manipulate the gear: tuple of transform node, constructor & polyExtrudeFace
-    return transform, constructor, extrudeFaces
+    return constructor, transform, extrudeFaces
 
-def changeTeeth(constructor, extrude, teeth = 10, length = 0.3):
+def changeTeeth(constructor, extrudeFaces, teeth = 10, length = 0.3):
     spans = teeth * 2
     # use polypipe with the poly pipe that you already have. use edit flag so it knows to edit the existing one instead of creating a new one
     cmds.polyPipe(constructor, edit = True, subdivisionsAxis = spans)
@@ -34,12 +34,13 @@ def changeTeeth(constructor, extrude, teeth = 10, length = 0.3):
     faceNames = []
 
     for face in sideFaces:
-        faceName = 'f[%s]' %(face)
+        faceName = 'f[%s]' % (face)
         faceNames.append(faceName)
 
     # print faceNames
     # get the length of the faceNames list, give it to setAttr(), get list of all the faces to use: expand the face names list so each one will be a parameter
-    cmds.setAttr('%s.inputComponents' %(extrude), len(faceNames), *faceNames, type = "componentList")
-    cmds.polyExtrudeFacet(extrude, edit = True, ltz = length) # localTranslateZ shorthand
+    cmds.setAttr('%s.inputComponents' %(extrudeFaces), len(faceNames), *faceNames, type = "componentList")
+    cmds.polyExtrudeFacet(extrudeFaces, edit = True, ltz = length) # localTranslateZ shorthand
 
-createGear()
+constructor, transform, extrudeFaces = createGear()
+changeTeeth(constructor, extrudeFaces, teeth = 30, length=1)
