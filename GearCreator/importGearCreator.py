@@ -5,5 +5,5 @@ reload(gearCreator)
 # constructor, transform, extrudeFaces = gearCreator.createGear()
 gearCreator.changeTeeth(constructor, extrude, teeth = 40)
 
-#get documentation
+# get documentation
 help(gearCreator.createGear)
