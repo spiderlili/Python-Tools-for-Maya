@@ -1,7 +1,22 @@
 import maya.cmds as cmds
 
 class Gear(object):
+    def __init__(self):
+        # set default values
+        self.transform = None
+        self.extrudeFaces = None
+        self.constructor = None
+
     def createGear(self, teeth=10, length = 0.3):
+        """
+        create a gear with the specified parameters:
+        Args:
+            teeth: the number of teeth to create
+            length: the length of teeth
+
+        Returns:
+            a tuple of the constructor, transform, polyExtrude node
+        """
         spans = teeth * 2
         self.transform, self.constructor = cmds.polyPipe(subdivisionsAxis = spans)
         sideFaces = range(spans * 2, spans * 3, 2)
@@ -12,10 +27,10 @@ class Gear(object):
 
         self.extrudeFaces = cmds.polyExtrudeFacet(localTranslateZ=length)[0]
 
-    def changeTeeth(self, constructor, extrudeFaces, teeth=10, length=0.3):
+    def changeTeeth(self, teeth=10, length=0.3):
         spans = teeth * 2
         # use polypipe with the poly pipe that you already have. use edit flag so it knows to edit the existing one instead of creating a new one
-        cmds.polyPipe(constructor, edit=True, subdivisionsAxis=spans)
+        cmds.polyPipe(self.constructor, edit=True, subdivisionsAxis=spans)
         sideFaces = range(spans * 2, spans * 3, 2)
         faceNames = []
 
@@ -25,5 +40,5 @@ class Gear(object):
 
         # print faceNames
         # get the length of the faceNames list, give it to setAttr(), get list of all the faces to use: expand the face names list so each one will be a parameter
-        cmds.setAttr('%s.inputComponents' % (extrudeFaces), len(faceNames), *faceNames, type="componentList")
-        cmds.polyExtrudeFacet(extrudeFaces, edit=True, ltz=length)  # localTranslateZ shorthand
+        cmds.setAttr('%s.inputComponents' % (self.extrudeFaces), len(faceNames), *faceNames, type="componentList")
+        cmds.polyExtrudeFacet(self.extrudeFaces, edit=True, ltz=length)  # localTranslateZ shorthand
