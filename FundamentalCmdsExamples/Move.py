@@ -10,3 +10,9 @@ myCube3 = mc.polyCube(name = 'standardCube')
 # move -r -os -wd 0 0 5 ;
 mc.move(5,0,0, myCube3[0], r = True, os = True, wd = True)
 mc.rotate(45,10,5, myCube3[0], a = True)
+
+# get rotationZ of cube
+mc.getAttr(myCube3[0] + ".rz")
+
+# need to get the width attribute from PolyCube rather than 'standardCube' node of the list
+mc.getAttr(myCube3[1] + ".w")
