@@ -23,8 +23,6 @@ mc.xform(myCube, ws = True, ro = True, q = True)
 
 import pymel.core as pm
 pos1 = pm.selected()[0].getMatrix()
-pos2 = pm.selected()[0].getMatrix()
-pos2 == pos1
 
 # no visible differences in matrices but not the same
 mc.xform(myCube, ws = True, eu = True, ro = (45, 90, 120))
