@@ -1,6 +1,6 @@
 import pymel.core as pymel
 import pymel.tools.mel2py as mel2py
-result = pymel.promptDialog(title = 'Convert Mel to Pymel', message = 'Enter Mel string: ', button = ['OK','Cancel'], defaultButton = 'OK', cancelButton = 'Cancel', dismissText = 'Cancel')
+result = pymel.promptDialog(title = 'Convert Mel to Python', message = 'Enter Mel string: ', button = ['OK','Cancel'], defaultButton = 'OK', cancelButton = 'Cancel', dismissText = 'Cancel')
 
 if result == 'OK':
 	text = pymel.promptDialog(query = True, text = True)
