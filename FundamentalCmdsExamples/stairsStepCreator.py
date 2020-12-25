@@ -1,9 +1,13 @@
-import maya.cmds as mc
+def makeStep():
+	import maya.cmds as mc
 
-for x in range(0, 20):
-	# generate 20 cubes with history
-	cube, cubeHistory = mc.polyCube(n = "step" + str(x))
+	# turns the construction history on: the corresponding node will be inserted into the history chain for the mesh
+	step, stepHistory = mc.polyCube(name = "step", ch = 1)
 
-	#offset translation X - equal spacing of 5
-	mc.setAttr(cube + ".tx", 2 * x)
-	mc.setAttr(cube + ".ty", x)
+	# set height y
+	mc.setAttr(stepHistory + ".h", 0.5)
+
+	# set depth z
+	mc.setAttr(stepHistory + ".depth", 5.0)
+
+makeStep()
