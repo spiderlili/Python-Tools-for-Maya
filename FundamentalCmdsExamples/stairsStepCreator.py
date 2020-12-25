@@ -1,4 +1,5 @@
 def makeStep():
+	""" makes a default step """
 	import maya.cmds as mc
 
 	# turns the construction history on: the corresponding node will be inserted into the history chain for the mesh
