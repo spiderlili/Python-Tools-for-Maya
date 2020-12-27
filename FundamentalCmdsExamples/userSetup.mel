@@ -1,0 +1,11 @@
+print("Loading userSetup.mel\n")
+
+//change with custom directory path
+python(import sys; sys.path.append("C:/python"););
+
+//convenience printing tool
+python("from pprint import pprint";);
+
+//logger GUI
+python("from pymel.tools import loggingControl;");
+python("loggingControl.initMenu();");
