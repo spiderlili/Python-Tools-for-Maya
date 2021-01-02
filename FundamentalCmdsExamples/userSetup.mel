@@ -1,7 +1,8 @@
 print("Loading userSetup.mel\n")
 
-//change with custom directory path
-python(import sys; sys.path.append("C:/python"););
+//change with custom directory path & add module directory path
+python("import sys; sys.path.pop(1);;sys.path.pop(1);");
+python(import sys; sys.path.append("C:/python");sys.path.append("D:/github/Python-Tools-for-Maya/FundamentalCmdsExamples/pyModules"););
 
 //convenience printing tool
 python("from pprint import pprint";);
