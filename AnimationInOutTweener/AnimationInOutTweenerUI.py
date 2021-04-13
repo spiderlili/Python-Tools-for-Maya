@@ -46,9 +46,6 @@ def tween(percentage, obj = None, attrs = None, selection = True):
 		# shorthand: same as above previousKeyframes logic
 		nextFrame = min(laterKeyframes) if laterKeyframes else None
 
-		if not previousFrame or nextFrame:
-			continue
-
 		# query the attribute at the given time
 		previousFrameValue = cmds.getAttr(attrFull, time = previousFrame)
 		nextFrameValue = cmds.getAttr(attrFull, time = nextFrame)
@@ -59,7 +56,8 @@ def tween(percentage, obj = None, attrs = None, selection = True):
 		frameValueDifference = nextFrameValue - previousFrameValue
 		weightedValueDifference = (frameValueDifference * percentage) / 100.0
 		currentValue = previousFrameValue + weightedValueDifference
-
+		print currentValue
+		
 		cmds.setKeyframe(attrFull, time = currentTime, value = currentValue)
 
 tween(50)
