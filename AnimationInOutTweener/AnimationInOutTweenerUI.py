@@ -67,7 +67,7 @@ class TweenWindow(object):
 		if cmds.window(self.windowName, query = True, exists = True): #delete window if it already exists
 			cmds.deleteUI(self.windowName)
 
-		cmds.window(windowName)
+		cmds.window(self.windowName)
 		self.buildUI()
 		cmds.showWindow()
 
