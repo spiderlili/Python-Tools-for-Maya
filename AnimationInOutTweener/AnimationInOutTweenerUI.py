@@ -60,4 +60,36 @@ def tween(percentage, obj = None, attrs = None, selection = True):
 		
 		cmds.setKeyframe(attrFull, time = currentTime, value = currentValue)
 
+# UI window using cmds: inherit from object
+class TweenWindow(object):
+	windowName = "Tweener Window" # static - will not change no matter what
+	def show(self):
+		if cmds.window(self.windowName, query = True, exists = True): #delete window if it already exists
+			cmds.deleteUI(self.windowName)
+
+		cmds.window(windowName)
+		self.buildUI()
+		cmds.showWindow()
+
+	def buildUI(self):
+		column = cmds.columnLayout()
+		cmds.text(label = "Use this slider to set the tween amount")
+
+		# whenever the slider has changed: will call the tween command. without parenthesis() => run the function rather than execute it immediately
+		row = cmds.rowLayout(numberOfColumns = 2)
+		self.slider = cmds.floatSlider(min = 0, max = 100, value = 50, step = 1, changeCommand = tween)
+
+		cmds.button(label = "Reset", command = self.reset)
+
+		# Maya commands stores the last layout it created: anything you make after that gets added to that layout. set parent to column to avoid layout issues
+		cmds.setParent(column)
+		cmds.button(label = "Close", command = self.close)
+
+	def reset(self, *args): # maya button sends 1 extra value to any function they're calling. everything not specified in this function will be stored in args
+		cmds.floatSlider(self.slider, edit = True, value = 50) # reset to default value of 50
+
+	def close(self, *args):
+		cmds.deleteUI(self.windowName)
+
 tween(50)
+tween.TweenWindow.show()
