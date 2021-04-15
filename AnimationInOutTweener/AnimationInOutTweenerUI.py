@@ -79,7 +79,7 @@ class TweenWindow(object):
 		row = cmds.rowLayout(numberOfColumns = 2)
 		self.slider = cmds.floatSlider(min = 0, max = 100, value = 50, step = 1, changeCommand = tween)
 
-		cmds.button(label = "Reset", command = self.reset)
+		cmds.button(label = "Reset to 50%", command = self.reset)
 
 		# Maya commands stores the last layout it created: anything you make after that gets added to that layout. set parent to column to avoid layout issues
 		cmds.setParent(column)
