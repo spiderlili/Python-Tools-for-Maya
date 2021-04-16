@@ -1,3 +1,5 @@
+# goal: create the library directory
+
 from maya import cmds
 import os
 import json
@@ -18,3 +20,14 @@ def createDirectory(directory = DIRECTORY):
 	if not os.path.exists(directory):
 		os.mkdir(directory)
 
+# class to manage controllers: find existing saved controllers & save new controllers
+class ControllerLibrary(dict):
+	def save(self, name, directory = DIRECTORY):
+		createDirectory(directory)
+		path = os.path.join(directory, '%s.ma' % name)
+
+		cmds.file(rename = path)
+		if cmds.ls(selection = True): # if there's a selection: get a list of the selections
+			cmds.file(force = True, type = 'mayaAscii', exportedSelected = True)
+		else:
+			cmds.file(save = True, type = 'mayaAscii', force = True) # if the file already exists: force save over it
