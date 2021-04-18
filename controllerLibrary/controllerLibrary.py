@@ -20,20 +20,25 @@ def createDirectory(directory = DIRECTORY):
 
 # class to manage controllers: find existing saved controllers & save new controllers, user can specify any data they want to save
 class ControllerLibrary(dict):
-	def save(self, name, directory = DIRECTORY):
+	def save(self, name, directory = DIRECTORY, **info):
 		createDirectory(directory)
 		path = os.path.join(directory, '%s.ma' % name)
 
-		# create a dictionary to save file data for the controller
+		# create a dictionary to save file data for the controller: file name & file path
 		infoFile = os.path.join(directory, '%s.json' % name)
+		info['name'] = name
+		info['path'] = path
 
 		cmds.file(rename = path)
 		if cmds.ls(selection = True): # if there's a selection: get a list of the selections
 			cmds.file(force = True, type = 'mayaAscii', exportedSelected = True)
 		else:
 			cmds.file(save = True, type = 'mayaAscii', force = True) # if the file already exists: force save over it
+
+		with open(infoFile, 'w') as f: # open the info file in write mode, store in temp f variable
+			json.dump(info, f, indent = 4) # dump info dict into f (opened file stream)
 	
-		self[name] = path # always update the library everytime you save, prevent bugs
+		self[name] = info # always update the library everytime you save, prevent bugs
 
 	# method to find any controller .ma files that has been saved
 	def find(self, directory = DIRECTORY):
@@ -47,6 +52,19 @@ class ControllerLibrary(dict):
 		for ma in mayaFiles:
 			name, extension = os.path.splitext(ma) # split the extension from the file, give back name & extension - just print file name without extension
 			path = os.path.join(directory, ma)
+			
+			infoFile = '%s.json' % name
+			if infoFile in files:
+				infoFile = os.path.join(directory, infoFile)
+
+				with open(infoFile, 'r') as f: # open the info file in read mode
+					json.load(f)
+			else:
+				info = []
+
+			info['name' name]
+			info('wave curtain') = path
+
 			self[name] = path # inherit from dict: can access cells as if it's a dictionary
 
 		pprint.pprint(self) # print key & value in a pretty easy to read manner
