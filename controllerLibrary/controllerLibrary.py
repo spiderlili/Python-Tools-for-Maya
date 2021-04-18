@@ -57,19 +57,20 @@ class ControllerLibrary(dict):
 			if infoFile in files:
 				infoFile = os.path.join(directory, infoFile)
 
-				with open(infoFile, 'r') as f: # open the info file in read mode
-					json.load(f)
+				with open(infoFile, 'r') as f: # open the info file stream in read mode, store info 
+					info = json.load(f)
 			else:
-				info = []
+				info = [] # if do not find the json file: init empty dictionary
 
-			info['name' name]
-			info('wave curtain') = path
+			# populate the dictionary in case the information is not there
+			info['name'] = name
+			info['path'] = path
 
-			self[name] = path # inherit from dict: can access cells as if it's a dictionary
+			self[name] = info # inherit from dict: can access cells as if it's a dictionary
 
 		pprint.pprint(self) # print key & value in a pretty easy to read manner
 
 	# load the saved controller file back inside maya, give it a file name string 'name' to load
 	def load(self, name):
-		path = self[name]
-		cmds.file(path, i = True, usingNamespaces = false) # python does not allow import keyword - use i instead. does not import controller into new namespace
+		path = self[name]['path'] # query dictionary object's path value - self[name] returns a dictionary object(NOT the path)
+		cmds.file(path, i = True, usingNamespaces = False) # python does not allow import keyword - use i instead. does not import controller into new namespace
