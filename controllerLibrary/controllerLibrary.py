@@ -18,11 +18,14 @@ def createDirectory(directory = DIRECTORY):
 	if not os.path.exists(directory):
 		os.mkdir(directory)
 
-# class to manage controllers: find existing saved controllers & save new controllers
+# class to manage controllers: find existing saved controllers & save new controllers, user can specify any data they want to save
 class ControllerLibrary(dict):
 	def save(self, name, directory = DIRECTORY):
 		createDirectory(directory)
 		path = os.path.join(directory, '%s.ma' % name)
+
+		# create a dictionary to save file data for the controller
+		infoFile = os.path.join(directory, '%s.json' % name)
 
 		cmds.file(rename = path)
 		if cmds.ls(selection = True): # if there's a selection: get a list of the selections
@@ -30,6 +33,8 @@ class ControllerLibrary(dict):
 		else:
 			cmds.file(save = True, type = 'mayaAscii', force = True) # if the file already exists: force save over it
 	
+		self[name] = path # always update the library everytime you save, prevent bugs
+
 	# method to find any controller .ma files that has been saved
 	def find(self, directory = DIRECTORY):
 		if not os.path.exists(directory):
@@ -45,3 +50,8 @@ class ControllerLibrary(dict):
 			self[name] = path # inherit from dict: can access cells as if it's a dictionary
 
 		pprint.pprint(self) # print key & value in a pretty easy to read manner
+
+	# load the saved controller file back inside maya, give it a file name string 'name' to load
+	def load(self, name):
+		path = self[name]
+		cmds.file(path, i = True, usingNamespaces = false) # python does not allow import keyword - use i instead. does not import controller into new namespace
