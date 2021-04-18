@@ -36,7 +36,7 @@ class ControllerLibrary(dict):
 			cmds.file(save = True, type = 'mayaAscii', force = True) # if the file already exists: force save over it
 
 		with open(infoFile, 'w') as f: # open the info file in write mode, store in temp f variable
-			json.dump(info, f, indent = 4) # dump info dict into f (opened file stream)
+			json.dump(info, f, indent = 4) # dump info dict into f (opened file stream), write data to file
 	
 		self[name] = info # always update the library everytime you save, prevent bugs
 
