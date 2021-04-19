@@ -20,7 +20,7 @@ def createDirectory(directory = DIRECTORY):
 
 # class to manage controllers: find existing saved controllers & save new controllers, user can specify any data they want to save
 class ControllerLibrary(dict):
-	def save(self, name, directory = DIRECTORY, **info):
+	def save(self, name, directory = DIRECTORY, screenshot = True, **info):
 		createDirectory(directory)
 		path = os.path.join(directory, '%s.ma' % name)
 
@@ -34,6 +34,9 @@ class ControllerLibrary(dict):
 			cmds.file(force = True, type = 'mayaAscii', exportedSelected = True)
 		else:
 			cmds.file(save = True, type = 'mayaAscii', force = True) # if the file already exists: force save over it
+
+		if screenshot:
+			info['screenshot'] = self.saveScreenshot(name, directory = directory)
 
 		with open(infoFile, 'w') as f: # open the info file in write mode, store in temp f variable
 			json.dump(info, f, indent = 4) # dump info dict into f (opened file stream), write data to file
@@ -62,6 +65,10 @@ class ControllerLibrary(dict):
 			else:
 				info = [] # if do not find the json file: init empty dictionary
 
+			screenshot = '%s.jpg' % name
+			if screenshot in files:
+				info['screenshot'] = os.path.join(directory, name)
+
 			# populate the dictionary in case the information is not there
 			info['name'] = name
 			info['path'] = path
@@ -74,3 +81,10 @@ class ControllerLibrary(dict):
 	def load(self, name):
 		path = self[name]['path'] # query dictionary object's path value - self[name] returns a dictionary object(NOT the path)
 		cmds.file(path, i = True, usingNamespaces = False) # python does not allow import keyword - use i instead. does not import controller into new namespace
+
+	def saveScreenshot(self, name, directory = DIRECTORY):
+		path = os.path.join(directory, '%s.jpg' % name)
+		cmds.viewFit() # make sure the view fits exactly around the controller
+		cmds.setAttr('defaultRenderGlobals.imageFormat', 8) # save to jpeg format
+		cmds.playblast(completeFilename = path, forceOverwrite = True, format = 'image', width = 200, height = 200, showOrnaments = False, startTime = 1, endTime = 1, viewer = False)
+		return path
