@@ -6,7 +6,7 @@ import pprint
 USER_APP_DIR = cmds.internalVar(userAppDir = True) # user's maya app directory
 DIRECTORY = os.path.join(USER_APP_DIR, 'controllerLibrary') # use os specific separator (different between Windows/Mac/Linux)
 
-# create the library directory. if function is not given any value: it will use the default directory
+# create the controller library directory. if function is not given any value: it will use the default directory
 def createDirectory(directory = DIRECTORY):
 	"""
 	Creates the given directory if it doesn't exist already
@@ -18,7 +18,7 @@ def createDirectory(directory = DIRECTORY):
 	if not os.path.exists(directory):
 		os.mkdir(directory)
 
-# class to manage controllers: find existing saved controllers & save new controllers, user can specify any data they want to save
+# core logic class to manage controllers: find existing saved controllers & save new controllers, user can specify any data they want to save
 class ControllerLibrary(dict):
 	def save(self, name, directory = DIRECTORY, screenshot = True, **info):
 		createDirectory(directory)
