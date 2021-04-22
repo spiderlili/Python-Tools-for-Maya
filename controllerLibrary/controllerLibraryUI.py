@@ -21,7 +21,13 @@ class ControllerLibraryUI(QtWidgets.QDialog): # ControllerLibrary is a dialog in
 		saveBtn = QtWidgets.QPushButton('Save')
 		saveLayout.addWidget(saveBtn)
 
+		iconSize = 64 # want icons to be 64 pixels wide
+		bufferSpace = 12 
 		self.listWidget = QtWidgets.QListWidget() # use self to access the list of thumbnails later
+		self.listWidget.setViewMode(QtWidgets.QListWidget.IconMode) # display the view mode in icon mode
+		self.listWidget.setIconSize(QtCore.QSize(iconSize, iconSize))
+		self.listWidget.setResizeMode(QtWidgets.QListWidget.Adjust) # make the list grow & shrink with the window size
+		self.listWidget.setGridSize(QtCore.QtSize(iconSize + bufferSpace, iconSize + bufferSpace)) # add buffer spacing between the icons
 		layout.addWidget(self.listWidget)
 
 		btnWidget = QtWidgets.QWidget()  # base class of all UI objects for the bottom horizontal buttons layout group
@@ -35,7 +41,17 @@ class ControllerLibraryUI(QtWidgets.QDialog): # ControllerLibrary is a dialog in
 		btnLayout.addWidget(closeBtn)
 
 	def populate(self):
-		pass
+		self.library.find()
+		for name, info in self.library.items(): # name = key, info = value
+			item = QtWidgets.QListWidgetItem(name) # display string for the name 
+			self.listWidget.addItem(item) 
+
+			# add a screenshot to each of the elements, get the screenshot from the info dictionary
+			screenshot = info.get('screenshot')
+			if screenshot:
+				icon = QtGui.QIcon(screenshot)
+				item.setIcon(icon)
+
 
 def showUI():
 	ui = ControllerLibraryUI() # create new instance
