@@ -38,6 +38,7 @@ class ControllerLibraryUI(QtWidgets.QDialog): # ControllerLibrary is a dialog in
 		btnLayout.addWidget(importBtn)
 
 		refreshBtn = QtWidgets.QPushButton('Refresh')
+		refreshBtn.clicked.connect(self.populate()) # repopulate the UI if any changes happen on disk - stay up to date
 		btnLayout.addWidget(refreshBtn)
 
 		closeBtn = QtWidgets.QPushButton('Close')
