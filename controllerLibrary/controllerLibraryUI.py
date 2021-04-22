@@ -33,11 +33,15 @@ class ControllerLibraryUI(QtWidgets.QDialog): # ControllerLibrary is a dialog in
 		btnWidget = QtWidgets.QWidget()  # base class of all UI objects for the bottom horizontal buttons layout group
 		btnLayout = QtWidgets.QHBoxLayout(btnWidget)
 		layout.addWidget(btnWidget)
+
 		importBtn = QtWidgets.QPushButton('Import')
 		btnLayout.addWidget(importBtn)
+
 		refreshBtn = QtWidgets.QPushButton('Refresh')
 		btnLayout.addWidget(refreshBtn)
+
 		closeBtn = QtWidgets.QPushButton('Close')
+		closeBtn.clicked.connect(self.close) # when the closed button is clicked: connect the clicked signal to its close function defined in QDialog
 		btnLayout.addWidget(closeBtn)
 
 	def populate(self):
