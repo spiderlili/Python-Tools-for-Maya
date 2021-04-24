@@ -45,6 +45,12 @@ class ControllerLibrary(dict):
 
 	# method to find any controller .ma files that has been saved
 	def find(self, directory = DIRECTORY):
+		"""
+		Finds the controllers saved on disk
+		Args:
+			directory: the directory to search in
+		"""
+		self.clear()
 		if not os.path.exists(directory):
 			return
 

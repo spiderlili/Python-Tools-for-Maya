@@ -46,6 +46,7 @@ class ControllerLibraryUI(QtWidgets.QDialog): # ControllerLibrary is a dialog in
 		btnLayout.addWidget(closeBtn)
 
 	def populate(self):
+		self.listWidget.clear() # clear listWidget's contents to prevent adding duplicates
 		self.library.find()
 		for name, info in self.library.items(): # name = key, info = value
 			item = QtWidgets.QListWidgetItem(name) # display string for the name 
