@@ -1,7 +1,7 @@
 from maya import cmds
 import pprint
-import controllerLibrary # import the ControllerLibrary class and not be bound to an instance from controllerLibrary.py
-reload(controllerLibrary) # any code changes in the ControllerLibrary module will automatically be picked up by the UI
+import controllerLib # import the ControllerLibrary class and not be bound to an instance from controllerLibrary.py
+reload(controllerLib) # any code changes in the ControllerLibrary module will automatically be picked up by the UI
 
 from Qt import QtWidgets, QtCore, QtGui # QtWidgets does not exist in pre-2016 Maya
 
@@ -12,7 +12,7 @@ class ControllerLibraryUI(QtWidgets.QDialog): # ControllerLibrary is a dialog in
 	def __init__(self):
 		super(ControllerLibraryUI, self).__init__() # same as: QtWidgets.QDialog.__init__(self) but more flexible & scalable, can inherit from multiple classes
 		self.setWindowTitle('Controller Library UI') 
-		self.library = controllerLibrary.ControllerLibrary() # points to an instance of ControllerLibrary inside UI from controllerLibrary.py
+		self.library = controllerLib.ControllerLibrary() # points to an instance of ControllerLibrary inside UI from controllerLibrary.py
 
 		# everytime when creating a new instance: automatically build UI & populate it
 		self.buildUI()
@@ -46,7 +46,7 @@ class ControllerLibraryUI(QtWidgets.QDialog): # ControllerLibrary is a dialog in
 		self.listWidget.setViewMode(QtWidgets.QListWidget.IconMode) # display the view mode in icon mode
 		self.listWidget.setIconSize(QtCore.QSize(iconSize, iconSize))
 		self.listWidget.setResizeMode(QtWidgets.QListWidget.Adjust) # make the list grow & shrink with the window size
-		self.listWidget.setGridSize(QtCore.QtSize(iconSize + bufferSpace, iconSize + bufferSpace)) # add buffer spacing between the icons
+		self.listWidget.setGridSize(QtCore.QSize(iconSize + bufferSpace, iconSize + bufferSpace)) # add buffer spacing between the icons
 		layout.addWidget(self.listWidget)
 
 		# child widget which holds all the buttons: base class of all UI objects for the bottom horizontal buttons layout group
