@@ -81,7 +81,7 @@ class ControllerLibrary(dict):
 
 			self[name] = info # inherit from dict: can access cells as if it's a dictionary
 
-		pprint.pprint(self) # print key & value in a pretty easy to read manner
+		# pprint.pprint(self) # debug: print key & value in a pretty easy to read manner
 
 	# load the saved controller file back inside maya, give it a file name string 'name' to load
 	def load(self, name):
