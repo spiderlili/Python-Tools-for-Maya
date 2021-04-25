@@ -20,3 +20,5 @@ def validateMesh():
 			validityFlags += ' non-manifold UV found\n'	
 		if not cmds.polyInfo(obj, nonManifoldVertices = True):
 			validityFlags += ' non-manifold vertices found\n'	
+
+		return validityFlags
