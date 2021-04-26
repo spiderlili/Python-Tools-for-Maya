@@ -1,13 +1,22 @@
+import maya.standalone 
+maya.standalone.initialize()
 import maya.cmds as cmds
 
-def validateMesh():
+def validateMesh(scene):
 	"""
-	Validate the mesh inside Maya and make sure it's clean
+	Batch-validate meshes from a scene and make sure they are clean.
+	Use Maya's standalone interpreter to run the util offline
 	"""
+
+	# force open the Maya scene file remotely
+	if os.path.isfile(scene):
+		cmds.file(scene, open = True, force = True) 
 
 	# list parents of the visible mesh objects, return full pathnames instead of object names
 	for obj in cmds.listRelatives(cmds.ls(type = mesh, v = True), p = True, fullPath = True):
+		validityFlags = ' scene: %s\n' % scene
 		validityFlags = ' mesh: %s\n' % obj
+
 		if not cmds.polyInfo(obj, invalidEdges = True):
 			validityFlags += ' invalid edges found\n'
 		if not cmds.polyInfo(obj, invalidVertices = True):
