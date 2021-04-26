@@ -2,8 +2,10 @@ import maya.cmds as cmds
 
 def validateMesh():
 	"""
-	Validate the mesh in Maya
+	Validate the mesh and make sure it's clean
 	"""
+
+	# list parents of the visible mesh objects, return full pathnames instead of object names
 	for obj in cmds.listRelatives(cmds.ls(type = mesh, v = True), p = True, fullPath = True):
 		validityFlags = ' mesh: %s\n' % obj
 		if not cmds.polyInfo(obj, invalidEdges = True):
