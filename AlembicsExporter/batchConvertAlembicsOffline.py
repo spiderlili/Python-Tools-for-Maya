@@ -7,7 +7,7 @@ import AlembicsExporter
 def main(assetDir):
 	scenes = osUtils.getFilesOfType(assetDir, 'ma') # find maya files
 	for scene in scenes:
-		abc = AlembicsExporter.exportAbcMesh(scene)
+		abc = AlembicsExporter.exportAbcMesh(scene, True) # export static mesh: only 1 single frame
 		print 'Exported: ', abc
 
 # import data from main(assetDir) into another tool without running main(), make sure to only run main when running this script without import
