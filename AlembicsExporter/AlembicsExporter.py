@@ -2,7 +2,7 @@ import maya.cmds as cmds
 
 def exportAbcMesh(scene):
 	"""
-	Export mesh
+	Export Alembics mesh
 	"""
 	if os.path.isfile(scene):
 		cmds.file(scene, open=True, force=True)
