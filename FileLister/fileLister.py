@@ -16,12 +16,12 @@ def UI():
     startDirectory = cmds.internalVar(uwd = True) # Default to project directory
     addressBar = cmds.textField("AddressBar", w=280, text = startDirectory)
     backButton = cmds.button(label = "<=", w=20, h=20, command = back)
-    contentList = cmds.textScrollList("ContentList", w=200, h=300, ams=False, dcc = forward)
+    scrollLayout = cmds.scrollLayout("ContentList", w=200, h=300, hst=0)
     
     # Attach the UI elements to the layout 
     cmds.formLayout(form, edit=True, af=[(addressBar, "top", 10), (addressBar, "left", 30)])
     cmds.formLayout(form, edit = True, af=[(backButton, "top", 10), (addressBar, "left", 10)])
-    cmds.formLayout(form, edit=True, af=[(contentList, "top", 40), (contentList, "left", 10)])
+    cmds.formLayout(form, edit=True, af=[(scrollLayout, "top", 40), (scrollLayout, "left", 10)])
     
     # Show window
     cmds.showWindow(window)
@@ -51,7 +51,33 @@ def forward(*args):
         getContents(forwardPath)    
 
 def getContents(path):
-    fileFilters = [".mb", ".ma", ".fbx", ".obj", ".bmp", ".jpg", ".tga"]
+    fileFilters = ["mb", "ma", "fbx", "obj", "bmp", "jpg", "tga"]
     contents = os.listdir(path)
+    validItems = []
+    directories = []
+    
     for item in contents:
-        cmds.textScrollList("ContentList", edit = True, append = item)
+        extension = item.rpartition(".")[2]
+        if extension in fileFilters:
+            validItems.append(item)
+        
+        if os.path.isdir(os.path.join(path, item)):
+            directories.append(item)
+        
+    for item in validItems:
+        createEntry(item, None)
+    
+    for item in directories:
+        createEntry(item, "menuIconFile.png")
+        
+def createEntry(item, icon):
+    # Create a rowColumnLayout with 2 columns, create an image for the icon, create a button with the label
+    layout = cmds.rowColumnLayout(w=200, nc=2)
+    if icon != None:
+        icon = cmds.iconTextButton(image = icon, w = 30, h = 30)
+        button = cmds.button(label = item, w = 150, h = 30)
+    else:
+        extension = item.rpartition(".")[2]
+        icon = cmds.iconTextButton(style = "textOnly", label = extension, w = 20)
+        button = cmds.button(label = item, w = 150, h = 30)
+         
