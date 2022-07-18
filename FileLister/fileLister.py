@@ -1,5 +1,6 @@
 import maya.cmds as cmds
 import os
+from functools import partial
 
 def UI():
     # Check to see if window exists
@@ -35,20 +36,23 @@ def back(*args):
         cmds.textField("AddressBar", edit = True, text = parentPath + "/")
         
         # Remove all contents from the list
-        cmds.textScrollList("ContentList", edit = True, removeAll = True)
+        children = cmds.scrollLayout("ContentList", q = True, childArray = True)
+        for child in children:
+           cmds.deleteUI(child)
         getContents(parentPath)
 
-def forward(*args):
+def forward(selectedItem, *args):
     currentPath = cmds.textField("AddressBar", q = True, text = True)
-    selectedItem = cmds.textScrollList("ContentList", q = True, selectItem = True)[0]
     forwardPath = currentPath + selectedItem + "/"
     
     if os.path.isdir(forwardPath):
         cmds.textField("AddressBar", edit = True, text = forwardPath)
         
         # Remove all contents from the list
-        cmds.textScrollList("ContentList", edit = True, removeAll = True)
-        getContents(forwardPath)    
+        children = cmds.scrollLayout("ContentList", q = True, childArray = True)
+        for child in children:
+           cmds.deleteUI(child)
+        getContents(forwardPath)
 
 def getContents(path):
     fileFilters = ["mb", "ma", "fbx", "obj", "bmp", "jpg", "tga"]
@@ -63,21 +67,20 @@ def getContents(path):
         
         if os.path.isdir(os.path.join(path, item)):
             directories.append(item)
-        
-    for item in validItems:
-        createEntry(item, None)
     
     for item in directories:
         createEntry(item, "menuIconFile.png")
+                
+    for item in validItems:
+        createEntry(item, None)
         
 def createEntry(item, icon):
     # Create a rowColumnLayout with 2 columns, create an image for the icon, create a button with the label
-    layout = cmds.rowColumnLayout(w=200, nc=2)
+    layout = cmds.rowColumnLayout(w=200, nc=2, parent = "ContentList") 
+    
     if icon != None:
-        icon = cmds.iconTextButton(image = icon, w = 30, h = 30)
-        button = cmds.button(label = item, w = 150, h = 30)
+        icon = cmds.iconTextButton(command = partial(forward, item), parent = layout, image = icon, w = 200, h = 30, style = "iconAndTextHorizontal", label = item)
     else:
-        extension = item.rpartition(".")[2]
-        icon = cmds.iconTextButton(style = "textOnly", label = extension, w = 20)
-        button = cmds.button(label = item, w = 150, h = 30)
+        icon = cmds.iconTextButton(command = partial(forward, item), parent = layout, w = 200, h = 30, style = "iconAndTextHorizontal", label = item)
+
          
