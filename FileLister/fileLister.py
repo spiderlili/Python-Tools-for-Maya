@@ -15,8 +15,8 @@ def UI():
     
     # Create address bar
     startDirectory = cmds.internalVar(uwd = True) # Default to project directory
-    addressBar = cmds.textField("AddressBar", w=280, text = startDirectory)
-    backButton = cmds.button(label = "<=", w=20, h=20, command = back)
+    addressBar = cmds.textField("AddressBar", w=280, text = startDirectory, parent = form)
+    backButton = cmds.button(label = "<=", w=30, h=20, command = back, parent = form)
     scrollLayout = cmds.scrollLayout("ContentList", w=200, h=300, hst=0)
     
     # Attach the UI elements to the layout 
@@ -35,15 +35,17 @@ def back(*args):
     if os.path.isdir(parentPath):
         cmds.textField("AddressBar", edit = True, text = parentPath + "/")
         
-        # Remove all contents from the list
+        # Remove all contents from the list if there are children
         children = cmds.scrollLayout("ContentList", q = True, childArray = True)
-        for child in children:
-           cmds.deleteUI(child)
+        # print (children)
+        if children != None:        
+            for child in children:
+               cmds.deleteUI(child)
         getContents(parentPath)
 
-def forward(selectedItem, *args):
+def forward(item, *args):
     currentPath = cmds.textField("AddressBar", q = True, text = True)
-    forwardPath = currentPath + selectedItem + "/"
+    forwardPath = currentPath + item + "/"
     
     if os.path.isdir(forwardPath):
         cmds.textField("AddressBar", edit = True, text = forwardPath)
@@ -52,6 +54,7 @@ def forward(selectedItem, *args):
         children = cmds.scrollLayout("ContentList", q = True, childArray = True)
         for child in children:
            cmds.deleteUI(child)
+        
         getContents(forwardPath)
 
 def getContents(path):
@@ -67,20 +70,20 @@ def getContents(path):
         
         if os.path.isdir(os.path.join(path, item)):
             directories.append(item)
-    
+
     for item in directories:
         createEntry(item, "menuIconFile.png")
-                
+            
     for item in validItems:
         createEntry(item, None)
-        
+                
 def createEntry(item, icon):
     # Create a rowColumnLayout with 2 columns, create an image for the icon, create a button with the label
     layout = cmds.rowColumnLayout(w=200, nc=2, parent = "ContentList") 
     
     if icon != None:
-        icon = cmds.iconTextButton(command = partial(forward, item), parent = layout, image = icon, w = 200, h = 30, style = "iconAndTextHorizontal", label = item)
+        icon = cmds.iconTextButton(command = partial(forward, item), parent=layout, image=icon, w=200, h=30, style = "iconAndTextHorizontal", label=item)
     else:
-        icon = cmds.iconTextButton(command = partial(forward, item), parent = layout, w = 200, h = 30, style = "iconAndTextHorizontal", label = item)
+        icon = cmds.iconTextButton(command = partial(forward, item), parent=layout, w=200, h=30, style = "iconAndTextHorizontal", label=item)
 
          
