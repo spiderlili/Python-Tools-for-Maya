@@ -17,12 +17,18 @@ def UI():
     startDirectory = cmds.internalVar(uwd = True) # Default to project directory
     addressBar = cmds.textField("AddressBar", w=280, text = startDirectory, parent = form)
     backButton = cmds.button(label = "<=", w=30, h=20, command = back, parent = form)
+    fileFilters = cmds.optionMenu("FileFiltersOptionMenu", label = "", w = 80, parent = form)
     scrollLayout = cmds.scrollLayout("ContentList", w=200, h=300, hst=0)
+    
+    # Add menuItems to the optionMenu dropdown
+    for item in ["All Files", "Maya Files", "Import Files", "Textures"]:
+        cmds.menuItem(label = item, parent = fileFilters)
     
     # Attach the UI elements to the layout 
     cmds.formLayout(form, edit=True, af=[(addressBar, "top", 10), (addressBar, "left", 30)])
     cmds.formLayout(form, edit = True, af=[(backButton, "top", 10), (addressBar, "left", 10)])
     cmds.formLayout(form, edit=True, af=[(scrollLayout, "top", 40), (scrollLayout, "left", 10)])
+    cmds.formLayout(form, edit=True, af=[(fileFilters, "top", 40), (fileFilters, "right", 10)])
     
     # Show window
     cmds.showWindow(window)
@@ -82,8 +88,8 @@ def createEntry(item, icon):
     layout = cmds.rowColumnLayout(w=200, nc=2, parent = "ContentList") 
     
     if icon != None:
-        icon = cmds.iconTextButton(command = partial(forward, item), parent=layout, image=icon, w=200, h=30, style = "iconAndTextHorizontal", label=item)
+        icon = cmds.iconTextButton(command = partial(forward, item), parent=layout, image=icon, w=200, h=20, style = "iconAndTextHorizontal", label=item)
     else:
-        icon = cmds.iconTextButton(command = partial(forward, item), parent=layout, w=200, h=30, style = "iconAndTextHorizontal", label=item)
+        icon = cmds.iconTextButton(command = partial(forward, item), parent=layout, w=200, h=20, style = "iconAndTextHorizontal", label=item)
 
          
