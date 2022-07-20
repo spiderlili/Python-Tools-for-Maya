@@ -17,7 +17,7 @@ def UI():
     startDirectory = cmds.internalVar(uwd = True) # Default to project directory
     addressBar = cmds.textField("AddressBar", w=280, text = startDirectory, parent = form)
     backButton = cmds.button(label = "<=", w=30, h=20, command = back, parent = form)
-    fileFilters = cmds.optionMenu("FileFiltersOptionMenu", label = "", w = 80, parent = form)
+    fileFilters = cmds.optionMenu("FileFiltersOptionMenu", label = "", w = 80, parent = form, cc = partial(getContents, None)) # changeCommand
     scrollLayout = cmds.scrollLayout("ContentList", w=200, h=300, hst=0)
     
     # Add menuItems to the optionMenu dropdown
@@ -40,13 +40,7 @@ def back(*args):
     
     if os.path.isdir(parentPath):
         cmds.textField("AddressBar", edit = True, text = parentPath + "/")
-        
-        # Remove all contents from the list if there are children
-        children = cmds.scrollLayout("ContentList", q = True, childArray = True)
-        # print (children)
-        if children != None:        
-            for child in children:
-               cmds.deleteUI(child)
+
         getContents(parentPath)
 
 def forward(item, *args):
@@ -55,16 +49,39 @@ def forward(item, *args):
     
     if os.path.isdir(forwardPath):
         cmds.textField("AddressBar", edit = True, text = forwardPath)
-        
-        # Remove all contents from the list
-        children = cmds.scrollLayout("ContentList", q = True, childArray = True)
-        for child in children:
-           cmds.deleteUI(child)
+    
         
         getContents(forwardPath)
 
-def getContents(path):
-    fileFilters = ["mb", "ma", "fbx", "obj", "bmp", "jpg", "tga"]
+# Use *args when being called from UI
+def getContents(path, *args): 
+    if path == None:
+        path = cmds.textField("AddressBar", q = True, text = True)
+    
+    # Remove all contents from the list if there are children
+    children = cmds.scrollLayout("ContentList", q = True, childArray = True)
+    # print (children)
+    if children != None:        
+        for child in children:
+           cmds.deleteUI(child)
+           
+    allFileFilters = ["mb", "ma", "fbx", "obj", "bmp", "jpg", "tga", "png"]
+    mayaFiles = ["mb", "ma"]
+    importFiles = ["obj", "fbx"]
+    textureFiles = ["bmp", "jpg", "tga", "png"]
+    fileFilters = []
+    
+    # Look up current filter selection in the option menu
+    currentFilter = cmds.optionMenu("FileFiltersOptionMenu", q = True, v = True)
+    if currentFilter == "All Files":
+        fileFilters = allFileFilters
+    if currentFilter == "Maya Files":
+        fileFilters = mayaFiles
+    if currentFilter == "Import Files":
+        fileFilters = importFiles
+    if currentFilter == "Textures":
+        fileFilters = textureFiles
+    
     contents = os.listdir(path)
     validItems = []
     directories = []
@@ -88,8 +105,8 @@ def createEntry(item, icon):
     layout = cmds.rowColumnLayout(w=200, nc=2, parent = "ContentList") 
     
     if icon != None:
-        icon = cmds.iconTextButton(command = partial(forward, item), parent=layout, image=icon, w=200, h=20, style = "iconAndTextHorizontal", label=item)
+        icon = cmds.iconTextButton(command = partial(forward, item), parent=layout, image=icon, w=190, h=20, style = "iconAndTextHorizontal", label=item)
     else:
-        icon = cmds.iconTextButton(command = partial(forward, item), parent=layout, w=200, h=20, style = "iconAndTextHorizontal", label=item)
+        icon = cmds.iconTextButton(command = partial(forward, item), parent=layout, w=190, h=20, style = "iconAndTextHorizontal", label=item)
 
          
