@@ -13,11 +13,12 @@ def UI():
     # Create window layout
     form = cmds.formLayout(w=300, h=400)
     
-    # Create address bar
+    # Create address bar widgets
     startDirectory = cmds.internalVar(uwd = True) # Default to project directory
     addressBar = cmds.textField("AddressBar", w=280, text = startDirectory, parent = form)
     backButton = cmds.button(label = "<=", w=30, h=20, command = back, parent = form)
     fileFilters = cmds.optionMenu("FileFiltersOptionMenu", label = "", w = 80, parent = form, cc = partial(getContents, None)) # changeCommand
+    searchField = cmds.textField("searchTextField", w=90, text = "search")
     scrollLayout = cmds.scrollLayout("ContentList", w=200, h=300, hst=0)
     
     # Add menuItems to the optionMenu dropdown
@@ -29,6 +30,7 @@ def UI():
     cmds.formLayout(form, edit = True, af=[(backButton, "top", 10), (addressBar, "left", 10)])
     cmds.formLayout(form, edit=True, af=[(scrollLayout, "top", 40), (scrollLayout, "left", 10)])
     cmds.formLayout(form, edit=True, af=[(fileFilters, "top", 40), (fileFilters, "right", 10)])
+    cmds.formLayout(form, edit=True, af=[(searchField, "top", 70), (searchField, "right", 0)])
     
     # Show window
     cmds.showWindow(window)
@@ -49,7 +51,6 @@ def forward(item, *args):
     
     if os.path.isdir(forwardPath):
         cmds.textField("AddressBar", edit = True, text = forwardPath)
-    
         
         getContents(forwardPath)
 
