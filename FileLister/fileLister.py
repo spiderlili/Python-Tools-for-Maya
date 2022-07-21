@@ -2,6 +2,8 @@ import maya.cmds as cmds
 import os
 from functools import partial
 
+searchFieldDefaultStr = "search"
+
 def UI():
     # Check to see if window exists
     if cmds.window("customFileLister",exists=True):
@@ -18,7 +20,8 @@ def UI():
     addressBar = cmds.textField("AddressBar", w=280, text = startDirectory, parent = form)
     backButton = cmds.button(label = "<=", w=30, h=20, command = back, parent = form)
     fileFilters = cmds.optionMenu("FileFiltersOptionMenu", label = "", w = 80, parent = form, cc = partial(getContents, None)) # changeCommand
-    searchField = cmds.textField("searchTextField", w=90, text = "search")
+    
+    searchField = cmds.textField("searchTextField", w=90, text = searchFieldDefaultStr, cc = partial(getContents, None)) # Figure out path by itself
     scrollLayout = cmds.scrollLayout("ContentList", w=200, h=300, hst=0)
     
     # Add menuItems to the optionMenu dropdown
@@ -97,10 +100,17 @@ def getContents(path, *args):
 
     for item in directories:
         createEntry(item, "menuIconFile.png")
-            
-    for item in validItems:
-        createEntry(item, None)
-                
+        
+    # Search file filter
+    searchString = cmds.textField("searchTextField", q = True, text = True)
+    if searchString != searchFieldDefaultStr or "":            
+        for item in validItems:
+            if item.find(searchString) != -1:
+                createEntry(item, None)
+    else:
+        for item in validItems:
+            createEntry(item, None)
+    
 def createEntry(item, icon):
     # Create a rowColumnLayout with 2 columns, create an image for the icon, create a button with the label
     layout = cmds.rowColumnLayout(w=200, nc=2, parent = "ContentList") 
