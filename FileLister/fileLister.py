@@ -4,6 +4,12 @@ from functools import partial
 
 searchFieldDefaultStr = "search"
 
+def defineFileFilterTypes():
+    allFileFilters = ["mb", "ma", "fbx", "obj", "bmp", "jpg", "tga", "png"]
+    mayaFiles = ["mb", "ma"]
+    importFiles = ["obj", "fbx"]
+    textureFiles = ["bmp", "jpg", "tga", "png"]
+
 def UI():
     # Check to see if window exists
     if cmds.window("customFileLister",exists=True):
@@ -56,7 +62,17 @@ def forward(item, *args):
         cmds.textField("AddressBar", edit = True, text = forwardPath)
         
         getContents(forwardPath)
-
+    else:
+        # TODO: Remove repetition of file filters code, condense into 1 reusable function
+        allFileFilters = ["mb", "ma", "fbx", "obj", "bmp", "jpg", "tga", "png"]
+        mayaFiles = ["mb", "ma"]
+        importFiles = ["obj", "fbx"]
+        textureFiles = ["bmp", "jpg", "tga", "png"]
+        
+        fileExtension = item.rpartition(".")[2]
+        if fileExtension in mayaFiles:
+            result = cmds.confirmDialog(title = "File Operation", button = ["Open", "Import", "Reference", "Cancel"], cancelButton = "Cancel", dismissString = "Cancel")
+        
 # Use *args when being called from UI
 def getContents(path, *args): 
     if path == None:
