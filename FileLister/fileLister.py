@@ -63,16 +63,39 @@ def forward(item, *args):
         
         getContents(forwardPath)
     else:
-        # TODO: Remove repetition of file filters code, condense into 1 reusable function
+        # TODO: Remove repetition of file filters code, condense into 1 reusable function. 
         allFileFilters = ["mb", "ma", "fbx", "obj", "bmp", "jpg", "tga", "png"]
         mayaFiles = ["mb", "ma"]
         importFiles = ["obj", "fbx"]
         textureFiles = ["bmp", "jpg", "tga", "png"]
         
+        # Check for Maya files
         fileExtension = item.rpartition(".")[2]
         if fileExtension in mayaFiles:
             result = cmds.confirmDialog(title = "File Operation", button = ["Open", "Import", "Reference", "Cancel"], cancelButton = "Cancel", dismissString = "Cancel")
         
+            if result == "Open":
+                cmds.file(currentPath + item, open = True, force = True)
+                
+            if result == "Import":
+                cmds.file(currentPath + item, i = True, force = True)
+                
+            if result == "Reference":
+                # Reference the file into a namespace with the same name as item file name without the extension
+                cmds.file(currentPath + item, r = True, loadReferenceDepth = "all", namespace = item.rpartition(".")[0])
+        
+        # Check for Import files
+        if fileExtension in importFiles:
+            result = cmds.confirmDialog(title = "File Operation", button = ["Import", "Cancel"], cancelButton = "Cancel", dismissString = "Cancel")
+            if result == "Import":
+                cmds.file(currentPath + item, i = True, force = True)
+
+        # Check for Texture files 
+        if fileExtension in textureFiles:
+            result = cmds.confirmDialog(title = "File Operation", button = ["Assign To Selected", "Cancel"], cancelButton = "Cancel", dismissString = "Cancel")
+            if result == "Assign To Selected":
+                print("Assign Texture To Selected")
+                                
 # Use *args when being called from UI
 def getContents(path, *args): 
     if path == None:
