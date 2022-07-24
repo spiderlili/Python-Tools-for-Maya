@@ -94,7 +94,7 @@ def forward(item, *args):
         if fileExtension in textureFiles:
             result = cmds.confirmDialog(title = "File Operation", button = ["Assign To Selected", "Cancel"], cancelButton = "Cancel", dismissString = "Cancel")
             if result == "Assign To Selected":
-                print("Assign Texture To Selected")
+                material = cmds.shadingNode("phong", asShader = True, name = item.rpartition(".")[0] + "_Mat")
                                 
 # Use *args when being called from UI
 def getContents(path, *args): 
