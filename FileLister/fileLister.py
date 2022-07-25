@@ -94,8 +94,21 @@ def forward(item, *args):
         if fileExtension in textureFiles:
             result = cmds.confirmDialog(title = "File Operation", button = ["Assign To Selected", "Cancel"], cancelButton = "Cancel", dismissString = "Cancel")
             if result == "Assign To Selected":
-                material = cmds.shadingNode("phong", asShader = True, name = item.rpartition(".")[0] + "_Mat")
+                selection = cmds.ls(sl = True) 
+                if len(selection) > 0:
+                    material = cmds.shadingNode("phong", asShader = True, name = item.rpartition(".")[0] + "_Mat")
+                    place2DTexNode = cmds.shadingNode("place2dTexture", asUtility = True)
+                    textureFile = currentPath + item
+                    texture = cmds.shadingNode("file", asTexture = True)
+                    cmds.connectAttr(place2DTexNode + ".outUV", texture + ".uvCoord")
+                    cmds.connectAttr(texture + ".outColor", material + ".color")
+                    cmds.setAttr(texture + ".fileTextureName", textureFile, type = "string")
                                 
+                    for obj in selection:
+                        cmds.select(obj)
+                        cmds.hyperShade(assign = material)
+                        cmds.select(clear = True)
+                        
 # Use *args when being called from UI
 def getContents(path, *args): 
     if path == None:
