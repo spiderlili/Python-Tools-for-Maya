@@ -90,10 +90,10 @@ def forward(item, *args):
             if result == "Import":
                 cmds.file(currentPath + item, i = True, force = True)
 
-        # Check for Texture files 
+        # Check for Texture files, create a material & assign to each selected object 
         if fileExtension in textureFiles:
-            result = cmds.confirmDialog(title = "File Operation", button = ["Assign To Selected", "Cancel"], cancelButton = "Cancel", dismissString = "Cancel")
-            if result == "Assign To Selected":
+            result = cmds.confirmDialog(title = "File Operation", button = ["Assign To Selected Objects", "Cancel"], cancelButton = "Cancel", dismissString = "Cancel")
+            if result == "Assign To Selected Objects":
                 selection = cmds.ls(sl = True) 
                 if len(selection) > 0:
                     material = cmds.shadingNode("phong", asShader = True, name = item.rpartition(".")[0] + "_Mat")
