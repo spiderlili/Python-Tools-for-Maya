@@ -11,9 +11,12 @@ def defineFileFilterTypes():
     textureFiles = ["bmp", "jpg", "tga", "png"]
 
 def UI():
-    # Check to see if window exists
+    # Check to see if window & dockControl already exists to prevent error
     if cmds.window("customFileLister",exists=True):
         cmds.deleteUI("customFileLister")
+    
+    if cmds.dockControl("fileListerDock", exists=True):
+        cmds.deleteUI("fileListerDock")
     
     # Create window
     window = cmds.window("customFileLister", w=300, h=400, sizeable = False, mnb=True, mxb=True, title="File Lister")
@@ -38,11 +41,14 @@ def UI():
     cmds.formLayout(form, edit=True, af=[(addressBar, "top", 10), (addressBar, "left", 30)])
     cmds.formLayout(form, edit = True, af=[(backButton, "top", 10), (addressBar, "left", 10)])
     cmds.formLayout(form, edit=True, af=[(scrollLayout, "top", 40), (scrollLayout, "left", 10)])
-    cmds.formLayout(form, edit=True, af=[(fileFilters, "top", 40), (fileFilters, "right", 10)])
-    cmds.formLayout(form, edit=True, af=[(searchField, "top", 70), (searchField, "right", 0)])
+    cmds.formLayout(form, edit=True, af=[(fileFilters, "top", 40)], ac = [fileFilters, "left", 5, scrollLayout]) # Attach fileFilters to scrollLayout
+    cmds.formLayout(form, edit=True, af=[(searchField, "top", 70)], ac = [searchField, "left", 5, scrollLayout]) # Attach searchField to scrollLayout
     
+    # Show dock control, allow all areas for docking
+    cmds.dockControl("fileListerDock", area = "left", content = window, w = 310, aa = "all")
+   
     # Show window
-    cmds.showWindow(window)
+    #cmds.showWindow(window)
     getContents(startDirectory)
         
 def back(*args):
