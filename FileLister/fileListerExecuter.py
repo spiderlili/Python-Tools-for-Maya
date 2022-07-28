@@ -2,7 +2,12 @@
 import maya.cmds as cmds
 import os, sys
 import importlib
-sys.path.append("/Users/jingtan/Documents/GitHub/Python-Tools-for-Maya/FileLister")
+
+fileListerPath = "/Users/jingtan/Documents/GitHub/Python-Tools-for-Maya/FileLister"
+doesSysPathExist = os.path.exists(fileListerPath)
+
+if doesSysPathExist == False:
+    sys.path.append(fileListerPath)
 
 def launchCustomFileLister():
     import fileLister
