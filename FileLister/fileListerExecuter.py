@@ -8,7 +8,7 @@ doesSysPathExist = os.path.exists(fileListerPath)
 
 if doesSysPathExist == False:
     sys.path.append(fileListerPath)
-
+        
 def launchCustomFileLister():
     import fileLister
     importlib.reload(fileLister)
