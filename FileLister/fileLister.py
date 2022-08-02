@@ -31,8 +31,12 @@ def UI():
     fileFilters = cmds.optionMenu("FileFiltersOptionMenu", label = "", w = 80, parent = form, cc = partial(getContents, None)) # changeCommand
     
     searchField = cmds.textField("searchTextField", w=90, text = searchFieldDefaultStr, cc = partial(getContents, None)) # Figure out path by itself
-    scrollLayout = cmds.scrollLayout("ContentList", w=200, h=300, hst=0)
     
+    # Add Favourite folders to a list
+    addFavouritesButton = cmds.button(label = "Add Favourite", w=90)
+    favouriteList = cmds.scrollLayout(w=90, h=200, parent = form)
+    scrollLayout = cmds.scrollLayout("ContentList", w=200, h=300, hst=0, parent = form) # Hide the scrollbar
+     
     # Add menuItems to the optionMenu dropdown
     for item in ["All Files", "Maya Files", "Import Files", "Textures"]:
         cmds.menuItem(label = item, parent = fileFilters)
@@ -43,6 +47,8 @@ def UI():
     cmds.formLayout(form, edit=True, af=[(scrollLayout, "top", 40), (scrollLayout, "left", 10)])
     cmds.formLayout(form, edit=True, af=[(fileFilters, "top", 40)], ac = [fileFilters, "left", 5, scrollLayout]) # Attach fileFilters to scrollLayout
     cmds.formLayout(form, edit=True, af=[(searchField, "top", 70)], ac = [searchField, "left", 5, scrollLayout]) # Attach searchField to scrollLayout
+    cmds.formLayout(form, edit=True, af=[(addFavouritesButton, "top", 100)], ac=[addFavouritesButton, "left", 5, scrollLayout]) # Attach AddFavouritesButton
+    cmds.formLayout(form, edit=True, af=[(favouriteList, "top", 130)], ac=[favouriteList, "left", 5, scrollLayout])
     
     # Show dock control, allow all areas for docking
     cmds.dockControl("fileListerDock", area = "left", content = window, w = 310, aa = "all")
