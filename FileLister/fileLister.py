@@ -33,8 +33,8 @@ def UI():
     searchField = cmds.textField("searchTextField", w=90, text = searchFieldDefaultStr, cc = partial(getContents, None)) # Figure out path by itself
     
     # Add Favourite folders to a list
-    addFavouritesButton = cmds.button(label = "Add Favourite", w=90)
-    favouriteList = cmds.scrollLayout(w=90, h=200, parent = form)
+    addFavoritesButton = cmds.button(label = "Add Favourite", w=90, c = addFavorite)
+    favoriteList = cmds.scrollLayout("FavoriteList", w=90, h=200, parent = form)
     scrollLayout = cmds.scrollLayout("ContentList", w=200, h=300, hst=0, parent = form) # Hide the scrollbar
      
     # Add menuItems to the optionMenu dropdown
@@ -47,8 +47,8 @@ def UI():
     cmds.formLayout(form, edit=True, af=[(scrollLayout, "top", 40), (scrollLayout, "left", 10)])
     cmds.formLayout(form, edit=True, af=[(fileFilters, "top", 40)], ac = [fileFilters, "left", 5, scrollLayout]) # Attach fileFilters to scrollLayout
     cmds.formLayout(form, edit=True, af=[(searchField, "top", 70)], ac = [searchField, "left", 5, scrollLayout]) # Attach searchField to scrollLayout
-    cmds.formLayout(form, edit=True, af=[(addFavouritesButton, "top", 100)], ac=[addFavouritesButton, "left", 5, scrollLayout]) # Attach AddFavouritesButton
-    cmds.formLayout(form, edit=True, af=[(favouriteList, "top", 130)], ac=[favouriteList, "left", 5, scrollLayout])
+    cmds.formLayout(form, edit=True, af=[(addFavoritesButton, "top", 100)], ac=[addFavoritesButton, "left", 5, scrollLayout]) # Attach AddFavouritesButton
+    cmds.formLayout(form, edit=True, af=[(favoriteList, "top", 130)], ac=[favoriteList, "left", 5, scrollLayout])
     
     # Show dock control, allow all areas for docking
     cmds.dockControl("fileListerDock", area = "left", content = window, w = 310, aa = "all")
@@ -121,6 +121,12 @@ def forward(item, *args):
                         cmds.hyperShade(assign = material)
                         cmds.select(clear = True)
                         
+
+def addFavorite(*args):
+    currentPath = cmds.textField("AddressBar", q = True, text = True)
+    niceName = currentPath.rpartition("/")[0].rpartition("/")[2]
+    createEntry(niceName, "menuIconFile.png", "FavoriteList", currentPath)
+
 # Use *args when being called from UI
 def getContents(path, *args): 
     if path == None:
@@ -163,21 +169,21 @@ def getContents(path, *args):
             directories.append(item)
 
     for item in directories:
-        createEntry(item, "menuIconFile.png")
+        createEntry(item, "menuIconFile.png", "ContentList", "")
         
     # Search file filter
     searchString = cmds.textField("searchTextField", q = True, text = True)
     if searchString != searchFieldDefaultStr or "":            
         for item in validItems:
             if item.find(searchString) != -1:
-                createEntry(item, None)
+                createEntry(item, None, "ContentList", "")
     else:
         for item in validItems:
-            createEntry(item, None)
+            createEntry(item, None, "ContentList", "")
     
-def createEntry(item, icon):
+def createEntry(item, icon, scrollLayout, annotationStr):
     # Create a rowColumnLayout with 2 columns, create an image for the icon, create a button with the label
-    layout = cmds.rowColumnLayout(w=200, nc=2, parent = "ContentList") 
+    layout = cmds.rowColumnLayout(w=200, nc=2, parent = scrollLayout) 
     
     if icon != None:
         icon = cmds.iconTextButton(command = partial(forward, item), parent=layout, image=icon, w=190, h=20, style = "iconAndTextHorizontal", label=item)
