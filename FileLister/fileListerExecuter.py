@@ -6,9 +6,6 @@ import importlib
 fileListerPath = "/Users/jingtan/Documents/GitHub/Python-Tools-for-Maya/FileLister"
 # sys.path.remove(fileListerPath)
 
-doesSysPathExist = os.path.exists(fileListerPath)
-print(sys.path)
-
 def launchCustomFileLister():
     import fileLister 
     importlib.reload(fileLister)
@@ -16,10 +13,11 @@ def launchCustomFileLister():
     
 if doesSysPathExist == False:
     sys.path.append(fileListerPath)
-        
+    launchCustomFileLister()
+
+doesSysPathExist = os.path.exists(fileListerPath)
+print(sys.path)
+
 launchCustomFileLister()
 
 scriptJobNum = cmds.scriptJob(event = ["NewSceneOpened", launchCustomFileLister])
-
-
-

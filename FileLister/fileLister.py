@@ -59,20 +59,20 @@ def UI():
         
 def back(*args):
     currentPath = cmds.textField("AddressBar", q = True, text = True)
-    parentPath = currentPath.rpartition("/")[0].rpartition("/")[0]
+    parentPath = currentPath.rpartition("/")[0].rpartition("/")[0] + "/"
     
     if os.path.isdir(parentPath):
         cmds.textField("AddressBar", edit = True, text = parentPath + "/")
-
         getContents(parentPath)
 
 def forward(item, *args):
     currentPath = cmds.textField("AddressBar", q = True, text = True)
     forwardPath = currentPath + item + "/"
+    print (currentPath)
+    print (forwardPath)
     
     if os.path.isdir(forwardPath):
         cmds.textField("AddressBar", edit = True, text = forwardPath)
-        
         getContents(forwardPath)
     else:
         # TODO: Remove repetition of file filters code, condense into 1 reusable function. 
@@ -125,12 +125,14 @@ def forward(item, *args):
 def addFavorite(*args):
     currentPath = cmds.textField("AddressBar", q = True, text = True)
     niceName = currentPath.rpartition("/")[0].rpartition("/")[2]
-    createEntry(niceName, "menuIconFile.png", "FavoriteList", currentPath)
+    createEntry(niceName, "menuIconFile.png", "FavoriteList", currentPath, True)
 
-# Use *args when being called from UI
+# Use *args when being called from UI. Update the folder path text field if the user pass in a path (when it's a favorite) 
 def getContents(path, *args): 
     if path == None:
         path = cmds.textField("AddressBar", q = True, text = True)
+    else: # This is causing issues - can't go forward when clicking on folder
+        cmds.textField("AddressBar", edit = True, text = path)
     
     # Remove all contents from the list if there are children
     children = cmds.scrollLayout("ContentList", q = True, childArray = True)
@@ -180,14 +182,15 @@ def getContents(path, *args):
     else:
         for item in validItems:
             createEntry(item, None, "ContentList", "")
-    
-def createEntry(item, icon, scrollLayout, annotationStr):
-    # Create a rowColumnLayout with 2 columns, create an image for the icon, create a button with the label
+      
+def createEntry(item, icon, scrollLayout, annotationStr, isFavorite = False):
+    # Create a rowColumnLayout with 2 columns, create an image for the icon, create a button with the label. annotationStr is the full folder path
     layout = cmds.rowColumnLayout(w=200, nc=2, parent = scrollLayout) 
     
-    if icon != None:
-        icon = cmds.iconTextButton(command = partial(forward, item), parent=layout, image=icon, w=190, h=20, style = "iconAndTextHorizontal", label=item)
+    if isFavorite == False:
+        if icon != None:
+            icon = cmds.iconTextButton(command = partial(forward, item), parent=layout, image=icon, w=190, h=20, style = "iconAndTextHorizontal", label=item, ann = annotationStr)
+        else:
+            icon = cmds.iconTextButton(command = partial(forward, item), parent=layout, w=190, h=20, style = "iconAndTextHorizontal", label=item, ann = annotationStr)
     else:
-        icon = cmds.iconTextButton(command = partial(forward, item), parent=layout, w=190, h=20, style = "iconAndTextHorizontal", label=item)
-
-         
+        icon = cmds.iconTextButton(command = partial(getContents, annotationStr), parent=layout, image=icon, w=190, h=20, style = "iconAndTextHorizontal", label=item, ann = annotationStr)
