@@ -1,6 +1,7 @@
 import maya.cmds as cmds
 import os
 from functools import partial
+import pickle
 
 searchFieldDefaultStr = "search"
 
@@ -56,6 +57,7 @@ def UI():
     # Show window
     #cmds.showWindow(window)
     getContents(startDirectory)
+    loadFavorites()
         
 def back(*args):
     currentPath = cmds.textField("AddressBar", q = True, text = True)
@@ -126,6 +128,24 @@ def addFavorite(*args):
     currentPath = cmds.textField("AddressBar", q = True, text = True)
     niceName = currentPath.rpartition("/")[0].rpartition("/")[2]
     createEntry(niceName, "menuIconFile.png", "FavoriteList", currentPath, True)
+    
+    # Create favorites.txt in the user prefs directory: /Users/jingtan/Library/Preferences/Autodesk/maya/2022/prefs 
+    favoritesFilePath = cmds.internalVar(upd = True) + "favorites.txt" 
+    favoritesFile = open(favoritesFilePath, 'wb') # w = write mode, wb = write binary mode
+    
+    children = cmds.scrollLayout("FavoriteList", q = True, childArray = True)
+    buttons = []
+    for child in children:
+        button = cmds.rowColumnLayout(child, q = True, childArray = True)[0] # Return icon text button
+        buttons.append(button)
+    
+    favorites = []
+    for button in buttons:
+        annotation = cmds.iconTextButton(button, q = True, ann = True)
+        favorites.append(annotation)
+    
+    pickle.dump(favorites, favoritesFile)
+    favoritesFile.close()
 
 # Use *args when being called from UI. Update the folder path text field if the user pass in a path (when it's a favorite) 
 def getContents(path, *args): 
@@ -183,6 +203,19 @@ def getContents(path, *args):
         for item in validItems:
             createEntry(item, None, "ContentList", "")
       
+def loadFavorites():
+    favoritesFilePath = cmds.internalVar(upd = True) + "favorites.txt" 
+    if os.path.exists(favoritesFilePath):
+        favoritesFile = open(favoritesFilePath, 'rb') # r = Read-only, rb = read bites
+        favorites = pickle.load(favoritesFile)
+        
+        for favorite in favorites:
+            niceName = favorite.rpartition("/")[0].rpartition("/")[2]
+            createEntry(niceName, "menuIconFile.png", "FavoriteList", favorite, True)
+            # print (favorite)
+        
+        favoritesFile.close()
+
 def createEntry(item, icon, scrollLayout, annotationStr, isFavorite = False):
     # Create a rowColumnLayout with 2 columns, create an image for the icon, create a button with the label. annotationStr is the full folder path
     layout = cmds.rowColumnLayout(w=200, nc=2, parent = scrollLayout) 
