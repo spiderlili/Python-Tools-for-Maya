@@ -19,3 +19,9 @@ def addPrefixOrSuffix(type):
         cmds.confirmDialog(t = "Error", m = "No object selected! Please select at least 1 object.", button = ["OK"], cb = "OK", dismissString = "OK")
             
 addPrefixOrSuffix("prefix")       
+
+def UI():
+    if cmds.window("renamerUI", exists = True):
+        cmds.deleteUI("renamerUI")
+    window = cmds.window("renamerUI", w = 300, h = 150, title = "Renamer", mxb = False, sizeable = False)
+    cmds.showWindow(window)
