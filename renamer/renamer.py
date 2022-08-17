@@ -24,4 +24,14 @@ def UI():
     if cmds.window("renamerUI", exists = True):
         cmds.deleteUI("renamerUI")
     window = cmds.window("renamerUI", w = 300, h = 150, title = "Renamer", mxb = False, sizeable = False)
+    
+    # Create the layout
+    layuot = cmds.formLayout()
+    
+    # Create prefix & suffix checkboxes
+    prefixCheckBox = cmds.checkBox("prefixCheckBox", label = "Add Prefix", v = False)
+    suffixCheckBox = cmds.checkBox("suffixCheckBox", label = "Add Suffix", v = False)
+    prefixText = cmds.textField("prefixTextField", w = 200)
+    suffixText = cmds.textField("suffixTextField", w = 200)
+    
     cmds.showWindow(window)
