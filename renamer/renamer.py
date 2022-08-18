@@ -2,11 +2,11 @@ import maya.cmds as cmds
 from functools import partial
 
 # TOOD - Prevent error: cannot rename a read only node
-def addPrefixOrSuffix(type):
+def addPrefixOrSuffix(type, text):
     selection = cmds.ls(sl = True)
     if len(selection) > 0:
-        cmds.promptDialog(t = "Add Prefix/Suffix", m = "Enter Name: ", button = ["OK", "Cancel"], db = "OK", cb = "Cancel", dismissString = "Cancel")
-        text = cmds.promptDialog(q = True, text = True)
+        # cmds.promptDialog(t = "Add Prefix/Suffix", m = "Enter Name: ", button = ["OK", "Cancel"], db = "OK", cb = "Cancel", dismissString = "Cancel")
+        # text = cmds.promptDialog(q = True, text = True)
         
         if text != "":
             if type == "prefix":
@@ -18,8 +18,6 @@ def addPrefixOrSuffix(type):
         
     else:
         cmds.confirmDialog(t = "Error", m = "No object selected! Please select at least 1 object.", button = ["OK"], cb = "OK", dismissString = "OK")
-            
-# addPrefixOrSuffix("prefix")       
 
 def checkBoxChanged(type, *args):
     # Get the value of the passed in checkbox
@@ -32,11 +30,18 @@ def checkBoxChanged(type, *args):
         
 
 def accept(*args):
-    prefix = cmds.textField("prefixTextField", q = True, text = True)
-    suffix = cmds.textField("suffixTextField", q = True, text = True)
-    print (prefix)
-    print (suffix)
-
+    # Get the values of the checkboxes
+    prefixCheckBox = cmds.checkBox("prefixCheckBox", q = True, v = True)
+    suffixCheckBox = cmds.checkBox("suffixCheckBox", q = True, v = True)
+    
+    if prefixCheckBox:
+        prefixText = cmds.textField("prefixTextField", q = True, text = True)
+        addPrefixOrSuffix("prefix", prefixText)
+        
+    if suffixCheckBox:
+        suffixText = cmds.textField("suffixTextField", q = True, text = True)
+        addPrefixOrSuffix("suffix", suffixText)
+    
 def cancel(*args):
     cmds.deleteUI("renamerUI")
 
