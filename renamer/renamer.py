@@ -48,7 +48,7 @@ def cancel(*args):
 def UI():
     if cmds.window("renamerUI", exists = True):
         cmds.deleteUI("renamerUI")
-    window = cmds.window("renamerUI", w = 300, h = 150, title = "Renamer", mxb = False, sizeable = False)
+    window = cmds.window("renamerUI", w = 300, h = 200, title = "Renamer", mxb = False, sizeable = False)
     
     # Create the layout
     layout = cmds.formLayout()
@@ -56,10 +56,17 @@ def UI():
     # Create prefix & suffix checkboxes
     prefixCheckBox = cmds.checkBox("prefixCheckBox", label = "Add Prefix", v = False, cc = partial(checkBoxChanged, "prefix"))
     suffixCheckBox = cmds.checkBox("suffixCheckBox", label = "Add Suffix", v = False, cc = partial(checkBoxChanged, "suffix"))
+    searchReplaceCheckBox = cmds.checkBox("searchReplaceCheckBox", label = "Search / Replace", v = False)
+    
     prefixLabel = cmds.text(label = "Prefix: ")
     prefixText = cmds.textField("prefixTextField", w = 200, enable = False)
     suffixLabel = cmds.text(label = "Suffix: ")
     suffixText = cmds.textField("suffixTextField", w = 200, enable = False)
+    
+    searchLabel = cmds.text(label = "Search For: ")
+    searchText = cmds.textField("searchTextField", w = 200, enable = False)
+    replaceLabel = cmds.text(label = "Replace With: ")
+    replaceText = cmds.textField("replaceTextField", w = 200, enable = False)
     
     acceptButton = cmds.button(label = "Accept", w = 130, command = accept)
     cancelButton = cmds.button(label = "Cancel", w = 130, command = cancel)
@@ -67,6 +74,7 @@ def UI():
     # Layout the items
     cmds.formLayout(layout, edit = True, af = [(prefixCheckBox, "left", 10), (prefixCheckBox, "top", 10)])
     cmds.formLayout(layout, edit = True, af = [(suffixCheckBox, "left", 100), (suffixCheckBox, "top", 10)])
+    cmds.formLayout(layout, edit = True, af = [(searchReplaceCheckBox, "right", 10), (searchReplaceCheckBox, "top", 10)])
     cmds.formLayout(layout, edit = True, af = [(prefixText, "left", 50), (prefixText, "top", 30)])
     cmds.formLayout(layout, edit = True, af = [(suffixText, "left", 50), (suffixText, "top", 60)])
     cmds.formLayout(layout, edit = True, af = [(prefixLabel, "left", 10), (prefixLabel, "top", 30)])
