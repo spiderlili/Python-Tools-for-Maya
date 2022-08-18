@@ -67,10 +67,10 @@ def UI():
     # Layout the items
     cmds.formLayout(layout, edit = True, af = [(prefixCheckBox, "left", 10), (prefixCheckBox, "top", 10)])
     cmds.formLayout(layout, edit = True, af = [(suffixCheckBox, "left", 100), (suffixCheckBox, "top", 10)])
-    cmds.formLayout(layout, edit = True, af = [(prefixText, "left", 50), (prefixText, "top", 40)])
-    cmds.formLayout(layout, edit = True, af = [(suffixText, "left", 50), (suffixText, "top", 70)])
-    cmds.formLayout(layout, edit = True, af = [(prefixLabel, "left", 10), (prefixLabel, "top", 40)])
-    cmds.formLayout(layout, edit = True, af = [(suffixLabel, "left", 10), (suffixLabel, "top", 70)])
+    cmds.formLayout(layout, edit = True, af = [(prefixText, "left", 50), (prefixText, "top", 30)])
+    cmds.formLayout(layout, edit = True, af = [(suffixText, "left", 50), (suffixText, "top", 60)])
+    cmds.formLayout(layout, edit = True, af = [(prefixLabel, "left", 10), (prefixLabel, "top", 30)])
+    cmds.formLayout(layout, edit = True, af = [(suffixLabel, "left", 10), (suffixLabel, "top", 60)])
     
     cmds.formLayout(layout, edit = True, af = [(acceptButton, "left", 10), (acceptButton, "bottom", 10)])
     cmds.formLayout(layout, edit = True, af = [(cancelButton, "left", 150), (cancelButton, "bottom", 10)])
