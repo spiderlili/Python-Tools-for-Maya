@@ -23,25 +23,64 @@ def checkBoxChanged(type, *args):
     # Get the value of the passed in checkbox
     # print (args)
     checkboxValue = cmds.checkBox(type + "CheckBox", q = True, v = True)
+    
     if checkboxValue == True:
-        cmds.textField(type + "TextField", edit = True, enable = True)
+        if type == "searchReplace":
+            cmds.textField("searchTextField", edit = True, enable = True)
+            cmds.textField("replaceTextField", edit = True, enable = True)
+        else:
+            cmds.textField(type + "TextField", edit = True, enable = True)
+                    
     if checkboxValue == False:
-        cmds.textField(type + "TextField", edit = True, enable = False)
+        if type == "searchReplace":
+            cmds.textField("searchTextField", edit = True, enable = False)
+            cmds.textField("replaceTextField", edit = True, enable = False)
+        else:
+            cmds.textField(type + "TextField", edit = True, enable = False)
         
-
 def accept(*args):
     # Get the values of the checkboxes
     prefixCheckBox = cmds.checkBox("prefixCheckBox", q = True, v = True)
     suffixCheckBox = cmds.checkBox("suffixCheckBox", q = True, v = True)
+    searchReplaceCheckBox = cmds.checkBox("searchReplaceCheckBox", q = True, v = True)
     
     if prefixCheckBox:
         prefixText = cmds.textField("prefixTextField", q = True, text = True)
         addPrefixOrSuffix("prefix", prefixText)
+        cmds.textField("prefixTextField", edit = True, text = "", enable = False) # Clean blank UI after execution
         
     if suffixCheckBox:
         suffixText = cmds.textField("suffixTextField", q = True, text = True)
         addPrefixOrSuffix("suffix", suffixText)
+        cmds.textField("suffixTextField", edit = True, text = "", enable = False) # Clean blank UI after execution
     
+    if searchReplaceCheckBox:
+        searchText = cmds.textField("searchTextField", q = True, text = True)
+        replaceText = cmds.textField("replaceTextField", q = True, text = True)
+        searchAndReplace(searchText, replaceText)
+        
+        # Clean blank UI after execution
+        searchText = cmds.textField("searchTextField", edit = True, text = "", enable = False)
+        replaceText = cmds.textField("replaceTextField", edit = True, text = "", enable = False)
+        
+    for checkbox in ["prefixCheckBox", "suffixCheckBox", "searchReplaceCheckBox"]:
+        cmds.checkBox(checkbox, edit = True, v = False)
+    
+def searchAndReplace(searchText, replaceText):
+    selection = cmds.ls(sl = True)
+    notFound = False
+    
+    if len(selection) > 0:
+        for obj in selection:
+            if obj.find(searchText) != -1:
+                newName = obj.replace(searchText, replaceText)
+                cmds.rename(obj, newName)
+            if obj.find(searchText) == -1:
+                notFound = True
+                
+    if notFound:
+        cmds.confirmDialog(message = "Search text is invalid: did not find anything with '%s'!" %searchText)
+
 def cancel(*args):
     cmds.deleteUI("renamerUI")
 
@@ -56,7 +95,7 @@ def UI():
     # Create prefix & suffix checkboxes
     prefixCheckBox = cmds.checkBox("prefixCheckBox", label = "Add Prefix", v = False, cc = partial(checkBoxChanged, "prefix"))
     suffixCheckBox = cmds.checkBox("suffixCheckBox", label = "Add Suffix", v = False, cc = partial(checkBoxChanged, "suffix"))
-    searchReplaceCheckBox = cmds.checkBox("searchReplaceCheckBox", label = "Search / Replace", v = False)
+    searchReplaceCheckBox = cmds.checkBox("searchReplaceCheckBox", label = "Search / Replace", v = False, cc = partial(checkBoxChanged, "searchReplace"))
     
     prefixLabel = cmds.text(label = "Prefix: ")
     prefixText = cmds.textField("prefixTextField", w = 200, enable = False)
@@ -79,6 +118,11 @@ def UI():
     cmds.formLayout(layout, edit = True, af = [(suffixText, "left", 50), (suffixText, "top", 60)])
     cmds.formLayout(layout, edit = True, af = [(prefixLabel, "left", 10), (prefixLabel, "top", 30)])
     cmds.formLayout(layout, edit = True, af = [(suffixLabel, "left", 10), (suffixLabel, "top", 60)])
+
+    cmds.formLayout(layout, edit = True, af = [(searchText, "left", 80), (searchText, "top", 100)])
+    cmds.formLayout(layout, edit = True, af = [(replaceText, "left", 80), (replaceText, "top", 120)])
+    cmds.formLayout(layout, edit = True, af = [(searchLabel, "left", 10), (searchLabel, "top", 100)])
+    cmds.formLayout(layout, edit = True, af = [(replaceLabel, "left", 10), (replaceLabel, "top", 120)])
     
     cmds.formLayout(layout, edit = True, af = [(acceptButton, "left", 10), (acceptButton, "bottom", 10)])
     cmds.formLayout(layout, edit = True, af = [(cancelButton, "left", 150), (cancelButton, "bottom", 10)])
