@@ -33,12 +33,15 @@ def ReturnOrigin(namespace):
     
     if len(joints):
         for joint in joints:
-            if cmds.objExists(joint + ".origin") and cmds.getAttr(joint + ".origin"):
+            if cmds.objExists(joint + ".origin") and cmds.getAttr(joint + ".origin"): # .origin must be ON
                 print (joint)
                 return joint
                 
     print("Error: No joint with .origin attribute on is found!")
     return "Error: No joint with .origin attribute on is found!"
+
+def FindMeshWithBlendShapes(namespace):
+    return
    
 # Tests
 # TagForOrigin("joint1")
