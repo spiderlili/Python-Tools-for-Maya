@@ -20,3 +20,26 @@ def TagForMeshExport(mesh):
 def TagForExportNode(node):
     if cmds.objExists(node) and not cmds.objExists(node + ".exportNode"):
         cmds.addAttr(node, shortName = "xnd", longName = "exportNode", at = "message")
+        
+# Return the origin of the given namespace. 
+# If namespace is not empty string: list all joints with the matching namespace, else list all joints        
+# Assumes namespace & origin attribute is on a joint. For list of joints, look for origin attribute & check if it's set to true. If found, return joint name. 
+def ReturnOrigin(namespace):
+    joints = []
+    if namespace:
+        joints = cmds.ls((namespace + ":*"), type = "joint") # namespace must NOT include colon:
+    else:
+        joints = cmds.ls(type = "joint")
+    
+    if len(joints):
+        for joint in joints:
+            if cmds.objExists(joint + ".origin") and cmds.getAttr(joint + ".origin"):
+                print (joint)
+                return joint
+                
+    print("Error: No joint with .origin attribute on is found!")
+    return "Error: No joint with .origin attribute on is found!"
+   
+# Tests
+# TagForOrigin("joint1")
+# ReturnOrigin("")
