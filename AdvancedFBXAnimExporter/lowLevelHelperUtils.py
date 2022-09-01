@@ -56,6 +56,10 @@ def FindMeshWithBlendShapes(namespace):
         print("No blend shapes are found!")
         return
     return returnArray
+    
+# Remove all nodes tagged as garbage
+def ClearGarbage():
+    return
 
 # Tests
 # TagForOrigin("joint1")
