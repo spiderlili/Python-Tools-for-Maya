@@ -57,7 +57,7 @@ def FindMeshWithBlendShapes(namespace):
         return
     return returnArray
     
-# Remove all nodes tagged as garbage
+# Remove all nodes tagged as garbage, list all transforms in the scene
 def ClearGarbage():
     return
 
