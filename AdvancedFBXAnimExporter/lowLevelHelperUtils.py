@@ -40,6 +40,9 @@ def ReturnOrigin(namespace):
     print("Error: No joint with .origin attribute on is found!")
     return "Error: No joint with .origin attribute on is found!"
 
+# Return the meshes connected to blend shape nodes (the rest are not needed by animation exports),
+# Get a list of blend shape nodes & follow those connections to the mesh shape node, traverse up the hierarchy to find the parent transform node
+# The character must have a valid namespace
 def FindMeshWithBlendShapes(namespace):
     return
    
