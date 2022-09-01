@@ -42,10 +42,22 @@ def ReturnOrigin(namespace):
 
 # Return the meshes connected to blend shape nodes (the rest are not needed by animation exports),
 # Get a list of blend shape nodes & follow those connections to the mesh shape node, traverse up the hierarchy to find the parent transform node
-# The character must have a valid namespace
+# The character must have a valid namespace & the namespace must NOT have ":" colon. Only supports single layer referencing & polygonal meshes (not NURBS)
 def FindMeshWithBlendShapes(namespace):
-    return
-   
+    returnArray = []
+    blendshapes = cmds.ls((namespace + ":*"), type = "blendShape")
+    for blendshape in blendshapes:
+        downstreamNodes = cmds.listHistory(blendshape, future = True)
+        for node in downstreamNodes:
+            if cmds.objectType(node, isType = "mesh"):
+                parents = cmds.listRelatives(node, parent = True)
+                returnArray.append(parents[0]) # Only has 1 parent on each instance
+    if len(returnArray) == 0:
+        print("No blend shapes are found!")
+        return
+    return returnArray
+
 # Tests
 # TagForOrigin("joint1")
 # ReturnOrigin("")
+# FindMeshWithBlendShapes("")    
