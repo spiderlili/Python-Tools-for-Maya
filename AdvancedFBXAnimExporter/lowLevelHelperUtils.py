@@ -58,10 +58,34 @@ def FindMeshWithBlendShapes(namespace):
     return returnArray
     
 # Remove all nodes tagged as garbage, list all transforms in the scene
+# Use deleteMe attribute to mark the attribute signifying garbage
 def ClearGarbage():
+    list = cmds.ls(tr = True)
+    for obj in list:
+        if cmds.objExists(obj + ".deleteMe"):
+            cmds.delete(obj)
+
+# Tag object for being garbage. If node is valid object & attribute does not exist, add deleteMe attribute
+def TagForGarbage(node):
+    if cmds.objExists(node) and not cmds.objExists(node + ".deleteMe"):
+        cmds.addAttr(node, shortName = "del", longName = "deleteMe", at = "bool")
+        cmds.setAttr(node + ".deleteMe", True)
+        
+# Delete given export node: if object exists, delete node
+def DeleteFBXExportNode(exportNode):
+    if cmds.objExists(exportNode):
+        cmds.delete()
+    return
+
+# Add the attribute to the export node to store export settings
+# For each attribute you want to add: check if it exists & add if it doesn't exist
+# Assume fbxExport node is a valid object
+def AddFBXNodeAttrs(fbxExportNode):
     return
 
 # Tests
+# TagForGarbage("pCube1")
+# ClearGarbage()
 # TagForOrigin("joint1")
 # ReturnOrigin("")
 # FindMeshWithBlendShapes("")    
