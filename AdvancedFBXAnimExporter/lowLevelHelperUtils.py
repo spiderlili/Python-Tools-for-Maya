@@ -120,7 +120,7 @@ def CreateFBXExportNode(characterName):
     return fbxExportNode
 
 # Tests
-CreateFBXExportNode("test")
+# CreateFBXExportNode("test")
 # AddFBXNodeAttrs("group1")
 # TagForGarbage("pCube1")
 # ClearGarbage()
