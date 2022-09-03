@@ -81,6 +81,36 @@ def DeleteFBXExportNode(exportNode):
 # For each attribute you want to add: check if it exists & add if it doesn't exist
 # Assume fbxExport node is a valid object
 def AddFBXNodeAttrs(fbxExportNode):
+    if not cmds.attributeQuery("export", node = fbxExportNode, exists = True):
+        cmds.addAttr(fbxExportNode, longName = 'export', at = "bool")
+    
+    if not cmds.attributeQuery("moveToOrigin", node = fbxExportNode, exists = True):
+        cmds.addAttr(fbxExportNode, longName = 'moveToOrigin', at = "bool")
+        
+    if not cmds.attributeQuery("zeroOrigin", node = fbxExportNode, exists = True): # Kill all anims on origin
+        cmds.addAttr(fbxExportNode, longName = 'zeroOrigin', at = "bool")
+        
+    if not cmds.attributeQuery("exportName", node = fbxExportNode, exists = True): 
+        cmds.addAttr(fbxExportNode, longName = 'exportName', dt = "string")   
+    
+    if not cmds.attributeQuery("useSubRange", node = fbxExportNode, exists = True): 
+        cmds.addAttr(fbxExportNode, longName = 'useSubRange', at = "bool")   
+
+    if not cmds.attributeQuery("startFrame", node = fbxExportNode, exists = True): 
+        cmds.addAttr(fbxExportNode, longName = 'startFrame', at = "float")   
+        
+    if not cmds.attributeQuery("endFrame", node = fbxExportNode, exists = True): 
+        cmds.addAttr(fbxExportNode, longName = 'endFrame', at = "float")   
+         
+    if not cmds.attributeQuery("exportMeshes", node = fbxExportNode, exists = True): 
+        cmds.addAttr(fbxExportNode, longName = 'exportMeshes', at = "message")            
+            
+    if not cmds.attributeQuery("exportNode", node = fbxExportNode, exists = True): 
+        cmds.addAttr(fbxExportNode, longName = 'exportNode', at = "message")    
+    
+    if not cmds.attributeQuery("animLayers", node = fbxExportNode, exists = True): 
+        cmds.addAttr(fbxExportNode, longName = 'animLayers', dt = "string")   
+        
     return
 
 # Tests
