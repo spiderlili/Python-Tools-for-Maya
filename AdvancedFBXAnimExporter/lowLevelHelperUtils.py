@@ -110,10 +110,18 @@ def AddFBXNodeAttrs(fbxExportNode):
     
     if not cmds.attributeQuery("animLayers", node = fbxExportNode, exists = True): 
         cmds.addAttr(fbxExportNode, longName = 'animLayers', dt = "string")   
-        
-    return
+
+# Create the export node to store export settings, create an empty transform node
+# Send it to AddFBXNodeAttrs to add the needed export attributes
+def CreateFBXExportNode(characterName):
+    fbxExportNode = cmds.group(em = True, name = characterName + "FBXExportNode#")
+    AddFBXNodeAttrs(fbxExportNode)
+    cmds.setAttr(fbxExportNode + ".export", 1)
+    return fbxExportNode
 
 # Tests
+CreateFBXExportNode("test")
+# AddFBXNodeAttrs("group1")
 # TagForGarbage("pCube1")
 # ClearGarbage()
 # TagForOrigin("joint1")
