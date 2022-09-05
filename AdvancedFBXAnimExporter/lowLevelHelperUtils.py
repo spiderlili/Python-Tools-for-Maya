@@ -128,6 +128,8 @@ def ReturnFBXExportNodes(origin):
 
     return exportNodeList
 
+# Connect the FBX Export node to the origin. 
+# Check if attribute exist & nodes are valid: if they are, connect attributes
 def ConnectFBXExportNodeToOrigin(exportNode, origin):
     if cmds.objExists(origin) and cmds.objExists(exportNode): 
         if not cmds.objExists(origin + ".exportNode"):
