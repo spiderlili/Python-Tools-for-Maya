@@ -74,8 +74,7 @@ def TagForGarbage(node):
 # Delete given export node: if object exists, delete node
 def DeleteFBXExportNode(exportNode):
     if cmds.objExists(exportNode):
-        cmds.delete()
-    return
+        cmds.delete(exportNode)
 
 # Add the attribute to the export node to store export settings
 # For each attribute you want to add: check if it exists & add if it doesn't exist
@@ -106,7 +105,7 @@ def AddFBXNodeAttrs(fbxExportNode):
         cmds.addAttr(fbxExportNode, longName = 'exportMeshes', at = "message")            
             
     if not cmds.attributeQuery("exportNode", node = fbxExportNode, exists = True): 
-        cmds.addAttr(fbxExportNode, longName = 'exportNode', at = "message")    
+        cmds.addAttr(fbxExportNode, shortName = "xnd", longName = 'exportNode', at = "message")    
     
     if not cmds.attributeQuery("animLayers", node = fbxExportNode, exists = True): 
         cmds.addAttr(fbxExportNode, longName = 'animLayers', dt = "string")   
@@ -119,11 +118,31 @@ def CreateFBXExportNode(characterName):
     cmds.setAttr(fbxExportNode + ".export", 1)
     return fbxExportNode
 
+# Return all export nodes connected to the given origin. 
+# If origin is valid & has the exportNode attribute: return list of export nodes connected to it.
+# Assumes that only export nodes are connected to the exportNode attribute.
+def ReturnFBXExportNodes(origin):
+    exportNodeList = []
+    if cmds.objExists(origin + ".exportNode"):
+        exportNodeList = cmds.listConnections(origin + ".exportNode")
+
+    return exportNodeList
+
+def ConnectFBXExportNodeToOrigin(exportNode, origin):
+    if cmds.objExists(origin) and cmds.objExists(exportNode): 
+        if not cmds.objExists(origin + ".exportNode"):
+            TagForExportNode(origin)
+        if not cmds.objExists(exportNode + ".exportNode"):
+            AddFBXNodeAttrs(fbxExportNode)
+        
+        cmds.connectAttr(origin + ".exportNode", exportNode + ".exportNode")
+
 # Tests
 # CreateFBXExportNode("test")
 # AddFBXNodeAttrs("group1")
 # TagForGarbage("pCube1")
 # ClearGarbage()
+# TagForOrigin("pCube1")
 # TagForOrigin("joint1")
 # ReturnOrigin("")
 # FindMeshWithBlendShapes("")    
