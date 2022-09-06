@@ -139,6 +139,34 @@ def ConnectFBXExportNodeToOrigin(exportNode, origin):
         
         cmds.connectAttr(origin + ".exportNode", exportNode + ".exportNode")
 
+# Model Export Procedures
+# Connect the meshes to the export node so the exporter can find them. Assumes that meshes is a list of transform nodes for polygon meshes 
+# check to make sure meshes & exportNode is valid, check for attribute "exportMeshes". If no attribute, add it & then connect attributes. 
+def ConnectFBXExportNodeToMeshes(exportNode, meshes):
+    if cmds.objExists(exportNode):
+        if not cmds.objExists(exportNode + ".exportMeshes"):
+            AddFBXNodeAttrs(fbxExportNode)
+            
+    for mesh in meshes:
+        if cmds.objExists(mesh):
+            if not cmds.objExists(exportNode + ".exportMeshes"):
+                TagForMeshExport(mesh)
+            cmds.connectAttr(exportNode + ".exportMeshes", mesh + ".exportMeshes", force = True)
+
+# Disconnect the message attribute between export node & mesh. 
+# Iterate through list of meshes. If mesh exists: disconnect. Assumes the node & mesh are connected via exportMeshes message attribute.     
+def DisconnectFBXExportNodeToMeshes(exportNode, meshes):
+    if cmds.objExists(exportNode):
+        for mesh in meshes:
+            if cmds.objExists(mesh):
+                cmds.disconnectAttr(exportNode + ".exportMeshes", mesh + ".exportMeshes")
+
+# Return a list of meshes connected to the export node. 
+# List connections to exportMeshes attribute. assumes exportMeshes is valid - exportMeshes attribute is used to connect to the export meshes. 
+def ReturnConnectedMeshes(exportNode):
+    meshes = cmds.listConnections((exportNode + ".exportMeshes"), source = False, destination = True)
+    return meshes
+
 # Tests
 # CreateFBXExportNode("test")
 # AddFBXNodeAttrs("group1")
