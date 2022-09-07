@@ -167,7 +167,49 @@ def ReturnConnectedMeshes(exportNode):
     meshes = cmds.listConnections((exportNode + ".exportMeshes"), source = False, destination = True)
     return meshes
 
+# Animation Export Procedures
+
+def UnlockJointTransforms(root):
+    hierarchy = cmds.listRelatives(root, ad = True, f = True)
+    hierarchy.append(root) # Add root joint to the list
+    
+    for child in hierarchy:
+        cmds.setAttr((child + '.translateX'), lock = False)
+        cmds.setAttr((child + '.translateY'), lock = False)
+        cmds.setAttr((child + '.translateZ'), lock = False)
+        cmds.setAttr((child + '.rotateX'), lock = False)
+        cmds.setAttr((child + '.rotateY'), lock = False)
+        cmds.setAttr((child + '.rotateZ'), lock = False)
+        cmds.setAttr((child + '.scaleX'), lock = False)
+        cmds.setAttr((child + '.scaleY'), lock = False)
+        cmds.setAttr((child + '.scaleZ'), lock = False)
+
+# Connect 1 node to another by connecting given node to the other given node via specified transform. 
+# 2 given nodes must exist & transform type (translate / rotate / scale) must be valid.
+def ConnectAttrs(sourceNode, destNode, transform):
+    cmds.connectAttr(sourceNode + "." + transform + "X",  destNode + "." + transform + "X")
+    cmds.connectAttr(sourceNode + "." + transform + "Y",  destNode + "." + transform + "Y")
+    cmds.connectAttr(sourceNode + "." + transform + "Z",  destNode + "." + transform + "Z")
+ 
+# Copy the bind skeleton, connect the copy to the original bind skeleton
+# Duplicate hierarchy, delete everything that's not a joint.
+# Unlock all the joints in the copy in order to make connections without errors.
+# Connect the translates, rotates, scales. Parent copy to the world for clean exporrt. Add deleteMe attr to get rid of the copy when export is done
+def CopyAndConnectSkeleton(origin):
+    newHierarchy = []
+    if origin != "Error" and cmds.objExists(origin):
+        duplicateHierarchy = cmds.duplicate(origin)
+        tempHierarchy = cmds.listRelatives(duplicateHierarchy[0], ad = True, f = True)
+        
+        for child in tempHierarchy:
+            if cmds.objExists(child):
+                if cmds.objectType(child) != "joint":
+                    cmds.delete(child)
+    
+
 # Tests
+# UnlockJointTransforms("joint1")
+# ConnectAttrs("joint1", "joint5", "rotate")
 # CreateFBXExportNode("test")
 # AddFBXNodeAttrs("group1")
 # TagForGarbage("pCube1")
