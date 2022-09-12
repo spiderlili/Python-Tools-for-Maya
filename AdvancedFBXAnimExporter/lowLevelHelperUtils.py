@@ -221,7 +221,14 @@ def CopyAndConnectSkeleton(origin):
         TagForGarbage(duplicateHierarchy[0])
     
     return newHierarchy
-        
+
+# Translate export skeleton to origin, may or may not kill origin animation depending on input 
+# Bake the animation onto the duplicate skeleton's origin 
+# Create an anim layer which will either be additive or override depending on input parameters. 
+# Add deleteMe attribute to animLayer => when exoprt is done, it will remove the animLayer.   
+def TransformToOrigin():
+    return
+    
 # Tests
 # UnlockJointTransforms("joint1")
 # ConnectAttrs("joint1", "joint5", "rotate")
