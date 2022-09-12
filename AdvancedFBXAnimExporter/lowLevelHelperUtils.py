@@ -208,19 +208,19 @@ def CopyAndConnectSkeleton(origin):
         
         UnlockJointTransforms(duplicateHierarchy[0]) 
         originalHierarchy = cmds.listRelatives(origin, ad = True, type = "joint")
-        newHiearchy = cmds.listRelatives(duplicateHierarchy[0], ad = True, type = "joint")
+        newHierarchy = cmds.listRelatives(duplicateHierarchy[0], ad = True, type = "joint")
         originalHierarchy.append(origin)
-        newHiearchy.append(duplicateHierarchy[0])
+        newHierarchy.append(duplicateHierarchy[0])
         
         for index in range(len(originalHierarchy)):
-            ConnectAttrs(originalHierarchy[index], newHiearchy[index], "translate")
-            ConnectAttrs(originalHierarchy[index], newHiearchy[index], "rotate")
-            ConnectAttrs(originalHierarchy[index], newHiearchy[index], "scale")
+            ConnectAttrs(originalHierarchy[index], newHierarchy[index], "translate")
+            ConnectAttrs(originalHierarchy[index], newHierarchy[index], "rotate")
+            ConnectAttrs(originalHierarchy[index], newHierarchy[index], "scale")
 
         cmds.parent(duplicateHierarchy[0], world = True)
         TagForGarbage(duplicateHierarchy[0])
     
-    return newHiearchy
+    return newHierarchy
         
 # Tests
 # UnlockJointTransforms("joint1")
