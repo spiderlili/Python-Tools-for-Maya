@@ -250,6 +250,19 @@ def TransformToOrigin(origin, startFrame, endFrame, zeroOrigin):
     cmds.setAttr(origin + ".translate", 0, 0, 0)
     cmds.setAttr(origin + ".rotate", 0, 0, 0)
     cmds.setKeyframe(origin, al = newAnimLayer, t = startFrame)
+ 
+# Animation Layer Procedures
+def SetAnimLayerSettings(exportNode):
+    animLayers = cmds.ls(type = "animLayer")
+    animLayerCommandStr = ""
+    
+    return
+    
+def SetAnimLayersFromSettings(exportNode):
+    return
+    
+def ClearAnimLayerSettings(exportNode):
+    cmds.setAttr(exportNode + ".animLayers", "", type = "string")
     
 # Tests
 # UnlockJointTransforms("joint1")
