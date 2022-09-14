@@ -226,8 +226,30 @@ def CopyAndConnectSkeleton(origin):
 # Bake the animation onto the duplicate skeleton's origin 
 # Create an anim layer which will either be additive or override depending on input parameters. 
 # Add deleteMe attribute to animLayer => when exoprt is done, it will remove the animLayer.   
-def TransformToOrigin():
-    return
+def TransformToOrigin(origin, startFrame, endFrame, zeroOrigin):
+    cmds.bakeResults(origin, t = (startFrame, endFrame), at = ["rx", "ry", "rz", "tx", "ty", "tz", "sx", "sy", "sz"], hi = "none")
+    cmds.select(clear = True)
+    cmds.select(origin)
+    newAnimLayer = ""
+    
+    # Override layer: kill all animations on the origin
+    if zeroOrigin:
+        newAnimLayer = cmds.animLayer(aso = True, mute = False, solo = False, override = True, passthrough = True, lock = False) 
+        cmds.setAttr(newAnimLayer + ".rotationAccumulationMode", 0)
+        cmds.setAttr(newAnimLayer + ".scaleAccumulationMode", 0)
+    else: # Additive: shifts origin animations
+        newAnimLayer = cmds.animLayer(aso = True, mute = False, solo = False, override = False, passthrough = False, lock = False) 
+    
+    TagForGarbage(newAnimLayer)
+    
+    # Turn anim layer on 
+    cmds.animLayer(newAnimLayer, edit = True, weight = 1)
+    cmds.setKeyframe(newAnimLayer + ".weight")
+    
+    # Move origin animation to world origin
+    cmds.setAttr(origin + ".translate", 0, 0, 0)
+    cmds.setAttr(origin + ".rotate", 0, 0, 0)
+    cmds.setKeyframe(origin, al = newAnimLayer, t = startFrame)
     
 # Tests
 # UnlockJointTransforms("joint1")
