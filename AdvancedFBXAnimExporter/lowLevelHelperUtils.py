@@ -252,14 +252,54 @@ def TransformToOrigin(origin, startFrame, endFrame, zeroOrigin):
     cmds.setKeyframe(origin, al = newAnimLayer, t = startFrame)
  
 # Animation Layer Procedures
+# Record the animLayer settings used in animation & store in the exportNode as a string. List all anim layers, query their mute & solo attributes
+# Use ; as sentinal value to split separate anim layers. 
+# Use , as sentinal value to split separate fields for animLayer. 
+# Use = as sentinal value to split separate attributes from their values in field. 
+
 def SetAnimLayerSettings(exportNode):
+    if not cmds.attributeQuery("animLayers", node = exportNode, exists = True): 
+        AddFBXNodeAttrs(exportNode)
+        
     animLayers = cmds.ls(type = "animLayer")
     animLayerCommandStr = ""
+    for layer in animLayers:
+        mute = cmds.animLayer(layer, query = True, mute = True)
+        solo = cmds.animLayer(layer, query = True, solo = True)
+        animLayerCommandStr += (layer + ", mute = " + str(mute) + ", solo = " + str(solo) + ";")
     
-    return
+    cmds.setAttr(exportNode + ".animLayers", animLayerCommandStr, type = "string")
+
+# Set the animlayers based on the string value in the exportNode. Use pre-defined sentinal values to split the string for separate animLayers. 
+# Parse out the attributes & their values, then set according to order: layer, mute, solo
     
 def SetAnimLayersFromSettings(exportNode):
-    return
+    if cmds.objExists(exportNode) and not cmds.objExists(node + ".animLayers"):
+        animLayersRootString = cmds.getAttr(exportNode + ".animLayers", asString = "True")
+    
+        if animLayersRootString:
+            animLayerEntries = animLayersRootString.split(";")
+            
+            for entry in animLayerEntries:
+                if entry:
+                    fields = entry.split(",")
+                    animLayerField = fields[0]
+                    muteField = fields[1]
+                    soloField = fields[2]
+                    
+                    muteFieldStr = muteField.split(" = ")
+                    soloFieldStr = soloField.split(" = ")
+                    
+                    # Convert strings to bool values
+                    muteFieldBool = True
+                    soloFieldBool = True
+                    if muteFieldStr[1] != "True":
+                        muteFieldBool = False
+                    
+                    if soloFieldStr[1] != "True":
+                        soloFieldBool = False
+                    
+                    cmds.animLayer(animLayerField, edit = True, mute = muteFieldBool, solo = soloFieldBool)
     
 def ClearAnimLayerSettings(exportNode):
     cmds.setAttr(exportNode + ".animLayers", "", type = "string")
