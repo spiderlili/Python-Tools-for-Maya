@@ -303,7 +303,17 @@ def SetAnimLayersFromSettings(exportNode):
     
 def ClearAnimLayerSettings(exportNode):
     cmds.setAttr(exportNode + ".animLayers", "", type = "string")
+
+# Export Procedures
+def ExportFBXAnimation(characterName, exportNode):
+    return
     
+def ExportFBXCharacter(exportNode):
+    return
+    
+def ExportFBX(exportNode):
+    return
+
 # Tests
 # UnlockJointTransforms("joint1")
 # ConnectAttrs("joint1", "joint5", "rotate")
