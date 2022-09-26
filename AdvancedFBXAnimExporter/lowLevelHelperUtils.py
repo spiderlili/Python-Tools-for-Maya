@@ -313,7 +313,7 @@ def ExportFBXCharacter(exportNode):
     
 # Called by procs in FBXAnimationModelExportOptions.mel
 def ExportFBX(exportNode): 
-    currentProjectWorkspace = cmds.workspace(q = True, rd = True) # Will fail if absolute path
+    currentProjectWorkspace = cmds.workspace(q = True, rd = True) # Will fail if absolute path. Look up the value of root directory
     fileName = cmds.getAttr(exportNode + ".exportName")
     if fileName:
         newFBX = currentProjectWorkspace + fileName
