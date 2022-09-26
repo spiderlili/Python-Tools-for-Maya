@@ -43,7 +43,7 @@ def ReturnOrigin(namespace):
 # Return the meshes connected to blend shape nodes (the rest are not needed by animation exports),
 # Get a list of blend shape nodes & follow those connections to the mesh shape node, traverse up the hierarchy to find the parent transform node
 # The character must have a valid namespace & the namespace must NOT have ":" colon. Only supports single layer referencing & polygonal meshes (not NURBS)
-def FindMeshWithBlendShapes(namespace):
+def FindMeshesWithBlendShapes(namespace):
     returnArray = []
     blendshapes = cmds.ls((namespace + ":*"), type = "blendShape")
     for blendshape in blendshapes:
@@ -306,8 +306,34 @@ def ClearAnimLayerSettings(exportNode):
 
 # Export Procedures
 def ExportFBXAnimation(characterName, exportNode):
-    return
+    ClearGarbage()
+    characters = []
     
+    if characterName:
+        characters.append(characterName)
+    else:
+        reference = cmds.file(reference = 1, query = True)
+        for currentReference in references:
+            characers.append(cmds.file(currentReference, namespace = 1, query = True))
+    
+    for character in characters:
+        # Get meshes with blend shapes
+        meshes = FindMeshesWithBlendShapes(character)
+        
+        # Get origin
+        origin = ReturnOrigin(character)
+        
+        exportNodes = []
+        
+        if exportNode:
+            exportNodes.append(exportNode)
+        else:
+            exportNodes = ReturnFBXExportNodes(origin)
+        
+        for currentExportNode in exportNodes:
+            if cmds.getAttr(currentExportNode + ".export") and origin != "Error": # Check if export is turned on
+                exportRig = CopyAndConnectSkeleton(origin) # Create dummy skeleton
+        
 def ExportFBXCharacter(exportNode):
     return
     
@@ -331,4 +357,4 @@ def ExportFBX(exportNode):
 # TagForOrigin("pCube1")
 # TagForOrigin("joint1")
 # ReturnOrigin("")
-# FindMeshWithBlendShapes("")    
+# FindMeshesWithBlendShapes("")    
