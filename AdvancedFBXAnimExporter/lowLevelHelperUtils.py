@@ -311,8 +311,15 @@ def ExportFBXAnimation(characterName, exportNode):
 def ExportFBXCharacter(exportNode):
     return
     
-def ExportFBX(exportNode):
-    return
+# Called by procs in FBXAnimationModelExportOptions.mel
+def ExportFBX(exportNode): 
+    currentProjectWorkspace = cmds.workspace(q = True, rd = True) # Will fail if absolute path
+    fileName = cmds.getAttr(exportNode + ".exportName")
+    if fileName:
+        newFBX = currentProjectWorkspace + fileName
+        cmds.file(newFBX, force = True, type = 'FBX export', pr = True, es = True)
+    else:
+        cmds.warning("No Valid Export Filename for Export Node: " + exportNode + "\n")
 
 # Tests
 # UnlockJointTransforms("joint1")
